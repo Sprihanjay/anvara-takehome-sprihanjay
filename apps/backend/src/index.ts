@@ -1,6 +1,7 @@
 import express, { type Application } from 'express';
 import cors from 'cors';
 import routes from './routes/index.js';
+import { globalErrorHandler } from './middleware/error-handler.js';
 
 const app: Application = express();
 const PORT = process.env.BACKEND_PORT || 4291;
@@ -15,6 +16,9 @@ app.use(express.json());
 
 // Mount all API routes
 app.use('/api', routes);
+
+// Global error handler (must be after routes)
+app.use(globalErrorHandler);
 
 // ============================================================================
 // SERVER STARTUP

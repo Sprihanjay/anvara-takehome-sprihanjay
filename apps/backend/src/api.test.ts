@@ -17,14 +17,19 @@ const mockPrisma = {
   campaign: {
     findMany: vi.fn(),
     findUnique: vi.fn(),
+    findFirst: vi.fn(),
     create: vi.fn(),
+    update: vi.fn(),
+    delete: vi.fn(),
     count: vi.fn(),
   },
   adSlot: {
     findMany: vi.fn(),
     findUnique: vi.fn(),
+    findFirst: vi.fn(),
     create: vi.fn(),
     update: vi.fn(),
+    delete: vi.fn(),
   },
   placement: {
     findMany: vi.fn(),
@@ -37,6 +42,22 @@ const mockPrisma = {
 
 vi.mock('./db.js', () => ({
   prisma: mockPrisma,
+  CampaignStatus: {
+    DRAFT: 'DRAFT',
+    PENDING_REVIEW: 'PENDING_REVIEW',
+    APPROVED: 'APPROVED',
+    ACTIVE: 'ACTIVE',
+    PAUSED: 'PAUSED',
+    COMPLETED: 'COMPLETED',
+    CANCELLED: 'CANCELLED',
+  },
+  AdSlotType: {
+    DISPLAY: 'DISPLAY',
+    VIDEO: 'VIDEO',
+    NATIVE: 'NATIVE',
+    NEWSLETTER: 'NEWSLETTER',
+    PODCAST: 'PODCAST',
+  },
 }));
 
 const { default: app } = await import('./index.js');
@@ -70,6 +91,19 @@ function mockPublisherSession() {
 function mockUnauthenticated() {
   mockGetSession.mockResolvedValue(null);
 }
+
+const VALID_CAMPAIGN_BODY = {
+  name: 'Test Campaign',
+  budget: 5000,
+  startDate: '2026-03-01',
+  endDate: '2026-04-01',
+};
+
+const VALID_AD_SLOT_BODY = {
+  name: 'Sidebar Ad',
+  type: 'DISPLAY',
+  basePrice: 50,
+};
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -150,9 +184,7 @@ describe('Campaign routes', () => {
 
     it('returns only the sponsor\'s own campaigns', async () => {
       mockSponsorSession();
-      const campaigns = [
-        { id: 'c1', name: 'My Campaign', sponsorId: SPONSOR_ID },
-      ];
+      const campaigns = [{ id: 'c1', name: 'My Campaign', sponsorId: SPONSOR_ID }];
       mockPrisma.campaign.findMany.mockResolvedValue(campaigns);
 
       const res = await request(app).get('/api/campaigns');
@@ -173,9 +205,9 @@ describe('Campaign routes', () => {
       expect(res.status).toBe(401);
     });
 
-    it('returns 404 for non-existent campaign', async () => {
+    it('returns 404 for non-existent campaign (anti-enumeration)', async () => {
       mockSponsorSession();
-      mockPrisma.campaign.findUnique.mockResolvedValue(null);
+      mockPrisma.campaign.findFirst.mockResolvedValue(null);
 
       const res = await request(app).get('/api/campaigns/nonexistent-id');
 
@@ -183,16 +215,14 @@ describe('Campaign routes', () => {
       expect(res.body.error).toBeDefined();
     });
 
-    it('returns 403 when accessing another sponsor\'s campaign', async () => {
+    it('returns 404 when accessing another sponsor\'s campaign (anti-enumeration)', async () => {
       mockSponsorSession();
-      mockPrisma.campaign.findUnique.mockResolvedValue({
-        id: 'campaign-other',
-        sponsorId: 'other-sponsor-id',
-      });
+      // findFirst with { id, sponsorId } returns null for wrong owner
+      mockPrisma.campaign.findFirst.mockResolvedValue(null);
 
       const res = await request(app).get('/api/campaigns/campaign-other');
 
-      expect(res.status).toBe(403);
+      expect(res.status).toBe(404);
     });
 
     it('returns campaign when sponsor owns it', async () => {
@@ -205,10 +235,7 @@ describe('Campaign routes', () => {
         creatives: [],
         placements: [],
       };
-      // First call: ownership check, second call: handler
-      mockPrisma.campaign.findUnique
-        .mockResolvedValueOnce({ sponsorId: SPONSOR_ID })
-        .mockResolvedValueOnce(campaign);
+      mockPrisma.campaign.findFirst.mockResolvedValue(campaign);
 
       const res = await request(app).get('/api/campaigns/campaign-1');
 
@@ -232,33 +259,151 @@ describe('Campaign routes', () => {
 
     it('returns 400 for missing required fields', async () => {
       mockSponsorSession();
-      const res = await request(app).post('/api/campaigns').send({ name: 'test' });
+      const res = await request(app).post('/api/campaigns').send({ budget: 100 });
       expect(res.status).toBe(400);
-      expect(res.body.error).toBeDefined();
+      expect(res.body.field).toBe('name');
+    });
+
+    it('returns 400 for name too short', async () => {
+      mockSponsorSession();
+      const res = await request(app).post('/api/campaigns').send({
+        ...VALID_CAMPAIGN_BODY,
+        name: 'ab',
+      });
+      expect(res.status).toBe(400);
+      expect(res.body.field).toBe('name');
+    });
+
+    it('returns 400 for negative budget', async () => {
+      mockSponsorSession();
+      const res = await request(app).post('/api/campaigns').send({
+        ...VALID_CAMPAIGN_BODY,
+        budget: -100,
+      });
+      expect(res.status).toBe(400);
+      expect(res.body.field).toBe('budget');
+    });
+
+    it('returns 400 when end date is before start date', async () => {
+      mockSponsorSession();
+      const res = await request(app).post('/api/campaigns').send({
+        ...VALID_CAMPAIGN_BODY,
+        startDate: '2026-04-01',
+        endDate: '2026-03-01',
+      });
+      expect(res.status).toBe(400);
+      expect(res.body.field).toBe('endDate');
     });
 
     it('creates campaign using session user\'s sponsorId', async () => {
       mockSponsorSession();
       const created = {
         id: 'new-campaign',
-        name: 'New Campaign',
+        name: 'Test Campaign',
         sponsorId: SPONSOR_ID,
         sponsor: { id: SPONSOR_ID, name: 'Test' },
       };
       mockPrisma.campaign.create.mockResolvedValue(created);
 
-      const res = await request(app).post('/api/campaigns').send({
-        name: 'New Campaign',
-        budget: 1000,
-        startDate: '2026-03-01',
-        endDate: '2026-04-01',
-      });
+      const res = await request(app).post('/api/campaigns').send(VALID_CAMPAIGN_BODY);
 
       expect(res.status).toBe(201);
       expect(res.body.sponsorId).toBe(SPONSOR_ID);
 
       const createCall = mockPrisma.campaign.create.mock.calls[0][0];
       expect(createCall.data.sponsorId).toBe(SPONSOR_ID);
+    });
+  });
+
+  describe('PUT /api/campaigns/:id', () => {
+    it('returns 401 when unauthenticated', async () => {
+      mockUnauthenticated();
+      const res = await request(app).put('/api/campaigns/c1').send({ name: 'Updated' });
+      expect(res.status).toBe(401);
+    });
+
+    it('returns 403 when authenticated as publisher', async () => {
+      mockPublisherSession();
+      const res = await request(app).put('/api/campaigns/c1').send({ name: 'Updated' });
+      expect(res.status).toBe(403);
+    });
+
+    it('returns 400 for invalid input (name too short)', async () => {
+      mockSponsorSession();
+      const res = await request(app).put('/api/campaigns/c1').send({ name: 'ab' });
+      expect(res.status).toBe(400);
+      expect(res.body.field).toBe('name');
+    });
+
+    it('returns 400 for invalid status value', async () => {
+      mockSponsorSession();
+      const res = await request(app).put('/api/campaigns/c1').send({ status: 'INVALID' });
+      expect(res.status).toBe(400);
+      expect(res.body.field).toBe('status');
+    });
+
+    it('returns 404 when campaign not found or not owned', async () => {
+      mockSponsorSession();
+      mockPrisma.campaign.findFirst.mockResolvedValue(null);
+
+      const res = await request(app).put('/api/campaigns/nonexistent').send({ name: 'Updated Name' });
+
+      expect(res.status).toBe(404);
+    });
+
+    it('updates campaign successfully', async () => {
+      mockSponsorSession();
+      mockPrisma.campaign.findFirst.mockResolvedValue({ id: 'c1', sponsorId: SPONSOR_ID });
+      const updated = {
+        id: 'c1',
+        name: 'Updated Campaign',
+        sponsorId: SPONSOR_ID,
+        status: 'ACTIVE',
+      };
+      mockPrisma.campaign.update.mockResolvedValue(updated);
+
+      const res = await request(app).put('/api/campaigns/c1').send({
+        name: 'Updated Campaign',
+        status: 'ACTIVE',
+      });
+
+      expect(res.status).toBe(200);
+      expect(res.body.name).toBe('Updated Campaign');
+      expect(res.body.status).toBe('ACTIVE');
+    });
+  });
+
+  describe('DELETE /api/campaigns/:id', () => {
+    it('returns 401 when unauthenticated', async () => {
+      mockUnauthenticated();
+      const res = await request(app).delete('/api/campaigns/c1');
+      expect(res.status).toBe(401);
+    });
+
+    it('returns 403 when authenticated as publisher', async () => {
+      mockPublisherSession();
+      const res = await request(app).delete('/api/campaigns/c1');
+      expect(res.status).toBe(403);
+    });
+
+    it('returns 404 when campaign not found or not owned', async () => {
+      mockSponsorSession();
+      mockPrisma.campaign.findFirst.mockResolvedValue(null);
+
+      const res = await request(app).delete('/api/campaigns/nonexistent');
+
+      expect(res.status).toBe(404);
+    });
+
+    it('deletes campaign successfully and returns 204', async () => {
+      mockSponsorSession();
+      mockPrisma.campaign.findFirst.mockResolvedValue({ id: 'c1', sponsorId: SPONSOR_ID });
+      mockPrisma.campaign.delete.mockResolvedValue({ id: 'c1' });
+
+      const res = await request(app).delete('/api/campaigns/c1');
+
+      expect(res.status).toBe(204);
+      expect(mockPrisma.campaign.delete).toHaveBeenCalledWith({ where: { id: 'c1' } });
     });
   });
 });
@@ -270,9 +415,7 @@ describe('Campaign routes', () => {
 describe('Ad Slot routes', () => {
   describe('GET /api/ad-slots (public)', () => {
     it('returns ad slots without authentication', async () => {
-      mockPrisma.adSlot.findMany.mockResolvedValue([
-        { id: 'slot-1', name: 'Hero Banner' },
-      ]);
+      mockPrisma.adSlot.findMany.mockResolvedValue([{ id: 'slot-1', name: 'Hero Banner' }]);
 
       const res = await request(app).get('/api/ad-slots');
 
@@ -322,6 +465,37 @@ describe('Ad Slot routes', () => {
       mockPublisherSession();
       const res = await request(app).post('/api/ad-slots').send({ name: 'Slot' });
       expect(res.status).toBe(400);
+      expect(res.body.field).toBeDefined();
+    });
+
+    it('returns 400 for name too short', async () => {
+      mockPublisherSession();
+      const res = await request(app).post('/api/ad-slots').send({
+        ...VALID_AD_SLOT_BODY,
+        name: 'ab',
+      });
+      expect(res.status).toBe(400);
+      expect(res.body.field).toBe('name');
+    });
+
+    it('returns 400 for invalid type enum', async () => {
+      mockPublisherSession();
+      const res = await request(app).post('/api/ad-slots').send({
+        ...VALID_AD_SLOT_BODY,
+        type: 'INVALID_TYPE',
+      });
+      expect(res.status).toBe(400);
+      expect(res.body.field).toBe('type');
+    });
+
+    it('returns 400 for non-positive basePrice', async () => {
+      mockPublisherSession();
+      const res = await request(app).post('/api/ad-slots').send({
+        ...VALID_AD_SLOT_BODY,
+        basePrice: 0,
+      });
+      expect(res.status).toBe(400);
+      expect(res.body.field).toBe('basePrice');
     });
 
     it('creates ad slot using session user\'s publisherId', async () => {
@@ -334,17 +508,98 @@ describe('Ad Slot routes', () => {
       };
       mockPrisma.adSlot.create.mockResolvedValue(created);
 
-      const res = await request(app).post('/api/ad-slots').send({
-        name: 'Sidebar Ad',
-        type: 'DISPLAY',
-        basePrice: 50,
-      });
+      const res = await request(app).post('/api/ad-slots').send(VALID_AD_SLOT_BODY);
 
       expect(res.status).toBe(201);
       expect(res.body.publisherId).toBe(PUBLISHER_ID);
 
       const createCall = mockPrisma.adSlot.create.mock.calls[0][0];
       expect(createCall.data.publisherId).toBe(PUBLISHER_ID);
+    });
+  });
+
+  describe('PUT /api/ad-slots/:id (publisher only)', () => {
+    it('returns 401 when unauthenticated', async () => {
+      mockUnauthenticated();
+      const res = await request(app).put('/api/ad-slots/slot-1').send({ name: 'Updated' });
+      expect(res.status).toBe(401);
+    });
+
+    it('returns 403 when authenticated as sponsor', async () => {
+      mockSponsorSession();
+      const res = await request(app).put('/api/ad-slots/slot-1').send({ name: 'Updated' });
+      expect(res.status).toBe(403);
+    });
+
+    it('returns 400 for invalid input (name too short)', async () => {
+      mockPublisherSession();
+      const res = await request(app).put('/api/ad-slots/slot-1').send({ name: 'ab' });
+      expect(res.status).toBe(400);
+      expect(res.body.field).toBe('name');
+    });
+
+    it('returns 404 when ad slot not found or not owned', async () => {
+      mockPublisherSession();
+      mockPrisma.adSlot.findFirst.mockResolvedValue(null);
+
+      const res = await request(app).put('/api/ad-slots/nonexistent').send({ name: 'Updated Slot' });
+
+      expect(res.status).toBe(404);
+    });
+
+    it('updates ad slot successfully', async () => {
+      mockPublisherSession();
+      mockPrisma.adSlot.findFirst.mockResolvedValue({ id: 'slot-1', publisherId: PUBLISHER_ID });
+      const updated = {
+        id: 'slot-1',
+        name: 'Updated Slot',
+        basePrice: 75,
+        publisherId: PUBLISHER_ID,
+      };
+      mockPrisma.adSlot.update.mockResolvedValue(updated);
+
+      const res = await request(app).put('/api/ad-slots/slot-1').send({
+        name: 'Updated Slot',
+        basePrice: 75,
+      });
+
+      expect(res.status).toBe(200);
+      expect(res.body.name).toBe('Updated Slot');
+      expect(res.body.basePrice).toBe(75);
+    });
+  });
+
+  describe('DELETE /api/ad-slots/:id (publisher only)', () => {
+    it('returns 401 when unauthenticated', async () => {
+      mockUnauthenticated();
+      const res = await request(app).delete('/api/ad-slots/slot-1');
+      expect(res.status).toBe(401);
+    });
+
+    it('returns 403 when authenticated as sponsor', async () => {
+      mockSponsorSession();
+      const res = await request(app).delete('/api/ad-slots/slot-1');
+      expect(res.status).toBe(403);
+    });
+
+    it('returns 404 when ad slot not found or not owned', async () => {
+      mockPublisherSession();
+      mockPrisma.adSlot.findFirst.mockResolvedValue(null);
+
+      const res = await request(app).delete('/api/ad-slots/nonexistent');
+
+      expect(res.status).toBe(404);
+    });
+
+    it('deletes ad slot successfully and returns 204', async () => {
+      mockPublisherSession();
+      mockPrisma.adSlot.findFirst.mockResolvedValue({ id: 'slot-1', publisherId: PUBLISHER_ID });
+      mockPrisma.adSlot.delete.mockResolvedValue({ id: 'slot-1' });
+
+      const res = await request(app).delete('/api/ad-slots/slot-1');
+
+      expect(res.status).toBe(204);
+      expect(mockPrisma.adSlot.delete).toHaveBeenCalledWith({ where: { id: 'slot-1' } });
     });
   });
 

@@ -2,112 +2,84 @@ import { Router, type Request, type Response, type IRouter } from 'express';
 import { prisma } from '../db.js';
 import { getParam } from '../utils/helpers.js';
 import { requireSponsor } from '../middleware/role.js';
-import { requireOwnership } from '../middleware/ownership.js';
+import { validateCreateCampaign, validateUpdateCampaign } from '../validators/campaign.validator.js';
+import { CampaignRepository } from '../repositories/campaign.repository.js';
+import { CampaignService } from '../services/campaign.service.js';
 
 const router: IRouter = Router();
 
+const campaignRepository = new CampaignRepository(prisma);
+const campaignService = new CampaignService(campaignRepository);
+
 // GET /api/campaigns - List authenticated sponsor's campaigns
 router.get('/', requireSponsor, async (req: Request, res: Response) => {
-  try {
-    const { status } = req.query;
-
-    const campaigns = await prisma.campaign.findMany({
-      where: {
-        sponsorId: req.user!.sponsorId!,
-        ...(status && { status: status as string as 'ACTIVE' | 'PAUSED' | 'COMPLETED' }),
-      },
-      include: {
-        sponsor: { select: { id: true, name: true, logo: true } },
-        _count: { select: { creatives: true, placements: true } },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-
-    res.json(campaigns);
-  } catch (error) {
-    console.error('Error fetching campaigns:', error);
-    res.status(500).json({ error: 'Failed to fetch campaigns' });
-  }
+  const statusFilter = req.query.status as string | undefined;
+  const campaigns = await campaignService.list(req.user!.sponsorId!, statusFilter);
+  res.json(campaigns);
 });
 
-// GET /api/campaigns/:id - Get single campaign (ownership verified by middleware)
-router.get('/:id', requireSponsor, requireOwnership('campaign'), async (req: Request, res: Response) => {
-  try {
-    const id = getParam(req.params.id);
-    const campaign = await prisma.campaign.findUnique({
-      where: { id },
-      include: {
-        sponsor: true,
-        creatives: true,
-        placements: {
-          include: {
-            adSlot: true,
-            publisher: { select: { id: true, name: true, category: true } },
-          },
-        },
-      },
-    });
-
-    if (!campaign) {
-      res.status(404).json({ error: 'Campaign not found' });
-      return;
-    }
-
-    res.json(campaign);
-  } catch (error) {
-    console.error('Error fetching campaign:', error);
-    res.status(500).json({ error: 'Failed to fetch campaign' });
-  }
+// GET /api/campaigns/:id - Get single campaign (ownership checked in service)
+router.get('/:id', requireSponsor, async (req: Request, res: Response) => {
+  const id = getParam(req.params.id);
+  const campaign = await campaignService.getById(id, req.user!.sponsorId!);
+  res.json(campaign);
 });
 
-// POST /api/campaigns - Create new campaign using session user's sponsorId
-router.post('/', requireSponsor, async (req: Request, res: Response) => {
-  try {
-    const {
+// POST /api/campaigns - Create new campaign
+router.post('/', requireSponsor, validateCreateCampaign, async (req: Request, res: Response) => {
+  const { name, description, budget, cpmRate, cpcRate, startDate, endDate, targetCategories, targetRegions } =
+    req.body;
+
+  const campaign = await campaignService.create(
+    {
       name,
       description,
       budget,
       cpmRate,
       cpcRate,
-      startDate,
-      endDate,
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
       targetCategories,
       targetRegions,
-    } = req.body;
+    },
+    req.user!.sponsorId!,
+  );
 
-    if (!name || !budget || !startDate || !endDate) {
-      res.status(400).json({
-        error: 'Name, budget, startDate, and endDate are required',
-      });
-      return;
-    }
-
-    const campaign = await prisma.campaign.create({
-      data: {
-        name,
-        description,
-        budget,
-        cpmRate,
-        cpcRate,
-        startDate: new Date(startDate),
-        endDate: new Date(endDate),
-        targetCategories: targetCategories || [],
-        targetRegions: targetRegions || [],
-        sponsorId: req.user!.sponsorId!,
-      },
-      include: {
-        sponsor: { select: { id: true, name: true } },
-      },
-    });
-
-    res.status(201).json(campaign);
-  } catch (error) {
-    console.error('Error creating campaign:', error);
-    res.status(500).json({ error: 'Failed to create campaign' });
-  }
+  res.status(201).json(campaign);
 });
 
-// TODO: Add PUT /api/campaigns/:id endpoint
-// Update campaign details (name, budget, dates, status, etc.)
+// PUT /api/campaigns/:id - Update campaign
+router.put(
+  '/:id',
+  requireSponsor,
+  validateUpdateCampaign,
+  async (req: Request, res: Response) => {
+    const id = getParam(req.params.id);
+    const { name, description, budget, cpmRate, cpcRate, startDate, endDate, targetCategories, targetRegions, status } =
+      req.body;
+
+    const data: Record<string, unknown> = {};
+    if (name !== undefined) data.name = name;
+    if (description !== undefined) data.description = description;
+    if (budget !== undefined) data.budget = budget;
+    if (cpmRate !== undefined) data.cpmRate = cpmRate;
+    if (cpcRate !== undefined) data.cpcRate = cpcRate;
+    if (startDate !== undefined) data.startDate = new Date(startDate);
+    if (endDate !== undefined) data.endDate = new Date(endDate);
+    if (targetCategories !== undefined) data.targetCategories = targetCategories;
+    if (targetRegions !== undefined) data.targetRegions = targetRegions;
+    if (status !== undefined) data.status = status;
+
+    const campaign = await campaignService.update(id, data, req.user!.sponsorId!);
+    res.json(campaign);
+  },
+);
+
+// DELETE /api/campaigns/:id - Delete campaign
+router.delete('/:id', requireSponsor, async (req: Request, res: Response) => {
+  const id = getParam(req.params.id);
+  await campaignService.delete(id, req.user!.sponsorId!);
+  res.status(204).send();
+});
 
 export default router;
