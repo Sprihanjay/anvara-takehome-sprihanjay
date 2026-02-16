@@ -1,62 +1,87 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { getAdSlots } from '@/lib/api';
-import { authClient } from '@/auth-client';
-import { getUserRole } from '@/lib/auth-helpers';
-import type { AdSlot } from '@/lib/types';
+import { useState, useTransition } from 'react';
+import { deleteAdSlot } from '../actions';
+import { AdSlotForm } from './ad-slot-form';
 import { AdSlotCard } from './ad-slot-card';
+import type { AdSlot } from '@/lib/types';
 
-export function AdSlotList() {
-  const [adSlots, setAdSlots] = useState<AdSlot[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { data: session } = authClient.useSession();
+interface AdSlotListProps {
+  adSlots: AdSlot[];
+}
 
-  useEffect(() => {
-    async function loadAdSlots() {
-      if (!session?.user?.id) return;
+export function AdSlotList({ adSlots }: AdSlotListProps) {
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [isPending, startTransition] = useTransition();
 
-      try {
-        const roleData = await getUserRole(session.user.id);
+  function handleDelete(id: string) {
+    if (!confirm('Are you sure you want to delete this ad slot?')) return;
 
-        if (roleData.publisherId) {
-          const data = await getAdSlots(roleData.publisherId);
-          setAdSlots(data);
-        } else {
-          setAdSlots([]);
-        }
-      } catch {
-        setError('Failed to load ad slots');
-      } finally {
-        setLoading(false);
+    startTransition(async () => {
+      const result = await deleteAdSlot(id);
+      if (result.error) {
+        alert(result.error);
       }
-    }
-
-    loadAdSlots();
-  }, [session?.user?.id]);
-
-  if (loading) {
-    return <div className="py-8 text-center text-[--color-muted]">Loading ad slots...</div>;
-  }
-
-  if (error) {
-    return <div className="rounded border border-red-200 bg-red-50 p-4 text-red-600">{error}</div>;
-  }
-
-  if (adSlots.length === 0) {
-    return (
-      <div className="rounded-lg border border-dashed border-[--color-border] p-8 text-center text-[--color-muted]">
-        No ad slots yet. Create your first ad slot to start earning.
-      </div>
-    );
+    });
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {adSlots.map((slot) => (
-        <AdSlotCard key={slot.id} adSlot={slot} />
-      ))}
+    <div>
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-2xl font-bold">My Ad Slots</h2>
+        <button
+          onClick={() => setShowCreateForm(true)}
+          className="rounded-lg bg-[--color-primary] px-4 py-2 text-sm text-white hover:opacity-90"
+        >
+          Create Ad Slot
+        </button>
+      </div>
+
+      {showCreateForm && (
+        <div className="mb-6 rounded-lg border border-[--color-border] bg-white p-4">
+          <h3 className="mb-4 text-lg font-semibold">New Ad Slot</h3>
+          <AdSlotForm onSuccess={() => setShowCreateForm(false)} />
+          <button
+            onClick={() => setShowCreateForm(false)}
+            className="mt-2 text-sm text-[--color-muted] hover:underline"
+          >
+            Cancel
+          </button>
+        </div>
+      )}
+
+      {adSlots.length === 0 && !showCreateForm ? (
+        <div className="rounded-lg border border-dashed border-[--color-border] p-8 text-center text-[--color-muted]">
+          No ad slots yet. Create your first ad slot to start earning.
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {adSlots.map((slot) => (
+            <div key={slot.id}>
+              {editingId === slot.id ? (
+                <div className="rounded-lg border border-[--color-border] p-4">
+                  <h3 className="mb-4 text-lg font-semibold">Edit Ad Slot</h3>
+                  <AdSlotForm adSlot={slot} onSuccess={() => setEditingId(null)} />
+                  <button
+                    onClick={() => setEditingId(null)}
+                    className="mt-2 text-sm text-[--color-muted] hover:underline"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              ) : (
+                <AdSlotCard
+                  adSlot={slot}
+                  onEdit={() => setEditingId(slot.id)}
+                  onDelete={() => handleDelete(slot.id)}
+                  isDeleting={isPending}
+                />
+              )}
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

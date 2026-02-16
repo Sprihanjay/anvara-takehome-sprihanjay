@@ -1,3 +1,5 @@
+'use client';
+
 import type { Campaign } from '@/lib/types';
 
 const statusColors: Record<string, string> = {
@@ -5,13 +7,17 @@ const statusColors: Record<string, string> = {
   ACTIVE: 'bg-green-100 text-green-700',
   PAUSED: 'bg-yellow-100 text-yellow-700',
   COMPLETED: 'bg-blue-100 text-blue-700',
+  CANCELLED: 'bg-red-100 text-red-700',
 };
 
 interface CampaignCardProps {
   campaign: Campaign;
+  onEdit: () => void;
+  onDelete: () => void;
+  isDeleting?: boolean;
 }
 
-export function CampaignCard({ campaign }: CampaignCardProps) {
+export function CampaignCard({ campaign, onEdit, onDelete, isDeleting }: CampaignCardProps) {
   const progress =
     campaign.budget > 0 ? (Number(campaign.spent) / Number(campaign.budget)) * 100 : 0;
 
@@ -45,9 +51,25 @@ export function CampaignCard({ campaign }: CampaignCardProps) {
         </div>
       </div>
 
-      <div className="text-xs text-[--color-muted]">
+      <div className="mb-3 text-xs text-[--color-muted]">
         {new Date(campaign.startDate).toLocaleDateString()} -{' '}
         {new Date(campaign.endDate).toLocaleDateString()}
+      </div>
+
+      <div className="flex gap-2">
+        <button
+          onClick={onEdit}
+          className="rounded bg-[--color-primary] px-3 py-1 text-xs text-white hover:opacity-90"
+        >
+          Edit
+        </button>
+        <button
+          onClick={onDelete}
+          disabled={isDeleting}
+          className="rounded bg-red-500 px-3 py-1 text-xs text-white hover:opacity-90 disabled:opacity-50"
+        >
+          {isDeleting ? 'Deleting...' : 'Delete'}
+        </button>
       </div>
     </div>
   );
