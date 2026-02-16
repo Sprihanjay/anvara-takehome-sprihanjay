@@ -1,19 +1,20 @@
 import { Router, type Request, type Response, type IRouter } from 'express';
 import { prisma } from '../db.js';
 import { getParam } from '../utils/helpers.js';
+import { requirePublisher } from '../middleware/role.js';
 
 const router: IRouter = Router();
 
-// GET /api/publishers - List all publishers
-router.get('/', async (_req: Request, res: Response) => {
+// GET /api/publishers - Get the authenticated user's publisher record
+router.get('/', requirePublisher, async (req: Request, res: Response) => {
   try {
     const publishers = await prisma.publisher.findMany({
+      where: { id: req.user!.publisherId! },
       include: {
         _count: {
           select: { adSlots: true, placements: true },
         },
       },
-      orderBy: { monthlyViews: 'desc' },
     });
     res.json(publishers);
   } catch (error) {
@@ -22,10 +23,16 @@ router.get('/', async (_req: Request, res: Response) => {
   }
 });
 
-// GET /api/publishers/:id - Get single publisher with ad slots
-router.get('/:id', async (req: Request, res: Response) => {
+// GET /api/publishers/:id - Get single publisher (verify ownership)
+router.get('/:id', requirePublisher, async (req: Request, res: Response) => {
   try {
     const id = getParam(req.params.id);
+
+    if (id !== req.user!.publisherId) {
+      res.status(403).json({ error: 'Access denied' });
+      return;
+    }
+
     const publisher = await prisma.publisher.findUnique({
       where: { id },
       include: {

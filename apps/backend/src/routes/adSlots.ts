@@ -1,10 +1,12 @@
 import { Router, type Request, type Response, type IRouter } from 'express';
 import { prisma } from '../db.js';
 import { getParam } from '../utils/helpers.js';
+import { requireAuth } from '../middleware/auth.js';
+import { requireSponsor, requirePublisher } from '../middleware/role.js';
 
 const router: IRouter = Router();
 
-// GET /api/ad-slots - List available ad slots
+// GET /api/ad-slots - List available ad slots (public)
 router.get('/', async (req: Request, res: Response) => {
   try {
     const { publisherId, type, available } = req.query;
@@ -31,7 +33,7 @@ router.get('/', async (req: Request, res: Response) => {
   }
 });
 
-// GET /api/ad-slots/:id - Get single ad slot with details
+// GET /api/ad-slots/:id - Get single ad slot with details (public)
 router.get('/:id', async (req: Request, res: Response) => {
   try {
     const id = getParam(req.params.id);
@@ -59,21 +61,17 @@ router.get('/:id', async (req: Request, res: Response) => {
   }
 });
 
-// POST /api/ad-slots - Create new ad slot
-router.post('/', async (req: Request, res: Response) => {
+// POST /api/ad-slots - Create new ad slot (publisher only)
+router.post('/', requireAuth, requirePublisher, async (req: Request, res: Response) => {
   try {
-    const { name, description, type, width, height, basePrice, publisherId } = req.body;
+    const { name, description, type, width, height, basePrice } = req.body;
 
-    if (!name || !type || !basePrice || !publisherId) {
+    if (!name || !type || !basePrice) {
       res.status(400).json({
-        error: 'Name, type, basePrice, and publisherId are required',
+        error: 'Name, type, and basePrice are required',
       });
       return;
     }
-
-    // TODO: Add authentication middleware to verify user owns publisherId
-    // TODO: Validate that basePrice is positive
-    // TODO: Validate that 'type' is valid enum value
 
     const adSlot = await prisma.adSlot.create({
       data: {
@@ -83,7 +81,7 @@ router.post('/', async (req: Request, res: Response) => {
         width,
         height,
         basePrice,
-        publisherId,
+        publisherId: req.user!.publisherId!,
       },
       include: {
         publisher: { select: { id: true, name: true } },
@@ -97,18 +95,12 @@ router.post('/', async (req: Request, res: Response) => {
   }
 });
 
-// POST /api/ad-slots/:id/book - Book an ad slot
-router.post('/:id/book', async (req: Request, res: Response) => {
+// POST /api/ad-slots/:id/book - Book an ad slot (sponsor only)
+router.post('/:id/book', requireAuth, requireSponsor, async (req: Request, res: Response) => {
   try {
     const id = getParam(req.params.id);
-    const { sponsorId, message } = req.body;
+    const { message } = req.body;
 
-    if (!sponsorId) {
-      res.status(400).json({ error: 'sponsorId is required' });
-      return;
-    }
-
-    // Check if slot exists and is available
     const adSlot = await prisma.adSlot.findUnique({
       where: { id },
       include: { publisher: true },
@@ -133,9 +125,9 @@ router.post('/:id/book', async (req: Request, res: Response) => {
       },
     });
 
-    // In a real app, you'd create a Placement record here
-    // For now, we just mark it as booked
-    console.log(`Ad slot ${id} booked by sponsor ${sponsorId}. Message: ${message || 'None'}`);
+    console.log(
+      `Ad slot ${id} booked by sponsor ${req.user!.sponsorId}. Message: ${message || 'None'}`,
+    );
 
     res.json({
       success: true,
@@ -148,8 +140,8 @@ router.post('/:id/book', async (req: Request, res: Response) => {
   }
 });
 
-// POST /api/ad-slots/:id/unbook - Reset ad slot to available (for testing)
-router.post('/:id/unbook', async (req: Request, res: Response) => {
+// POST /api/ad-slots/:id/unbook - Reset ad slot to available (requires auth)
+router.post('/:id/unbook', requireAuth, async (req: Request, res: Response) => {
   try {
     const id = getParam(req.params.id);
 

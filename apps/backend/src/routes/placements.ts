@@ -4,13 +4,20 @@ import { getParam } from '../utils/helpers.js';
 
 const router: IRouter = Router();
 
-// GET /api/placements - List placements
+// GET /api/placements - List placements scoped to authenticated user
 router.get('/', async (req: Request, res: Response) => {
   try {
     const { campaignId, publisherId, status } = req.query;
 
+    const userScope = req.user!.sponsorId
+      ? { campaign: { sponsorId: req.user!.sponsorId } }
+      : req.user!.publisherId
+        ? { publisherId: req.user!.publisherId }
+        : {};
+
     const placements = await prisma.placement.findMany({
       where: {
+        ...userScope,
         ...(campaignId && { campaignId: getParam(campaignId) }),
         ...(publisherId && { publisherId: getParam(publisherId) }),
         ...(status && {
@@ -39,24 +46,31 @@ router.get('/', async (req: Request, res: Response) => {
   }
 });
 
-// POST /api/placements - Create new placement
+// POST /api/placements - Create new placement (verify campaign ownership)
 router.post('/', async (req: Request, res: Response) => {
   try {
-    const {
-      campaignId,
-      creativeId,
-      adSlotId,
-      publisherId,
-      agreedPrice,
-      pricingModel,
-      startDate,
-      endDate,
-    } = req.body;
+    const { campaignId, creativeId, adSlotId, publisherId, agreedPrice, pricingModel, startDate, endDate } =
+      req.body;
 
     if (!campaignId || !creativeId || !adSlotId || !publisherId || !agreedPrice) {
       res.status(400).json({
         error: 'campaignId, creativeId, adSlotId, publisherId, and agreedPrice are required',
       });
+      return;
+    }
+
+    const campaign = await prisma.campaign.findUnique({
+      where: { id: campaignId },
+      select: { sponsorId: true },
+    });
+
+    if (!campaign) {
+      res.status(404).json({ error: 'Campaign not found' });
+      return;
+    }
+
+    if (campaign.sponsorId !== req.user!.sponsorId) {
+      res.status(403).json({ error: 'Access denied' });
       return;
     }
 

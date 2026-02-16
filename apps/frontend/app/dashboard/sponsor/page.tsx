@@ -19,7 +19,7 @@ export default async function SponsorDashboard() {
     redirect('/');
   }
 
-  const campaigns = await getSponsorCampaigns(roleData.sponsorId);
+  const campaigns = await getSponsorCampaigns();
 
   return (
     <div className="space-y-6">

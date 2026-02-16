@@ -1,4 +1,5 @@
 import { Router, type IRouter } from 'express';
+import { requireAuth } from '../middleware/auth.js';
 import authRoutes from './auth.js';
 import sponsorsRoutes from './sponsors.js';
 import publishersRoutes from './publishers.js';
@@ -10,14 +11,16 @@ import healthRoutes from './health.js';
 
 const router: IRouter = Router();
 
-// Mount all routes
-router.use('/auth', authRoutes);
-router.use('/sponsors', sponsorsRoutes);
-router.use('/publishers', publishersRoutes);
-router.use('/campaigns', campaignsRoutes);
-router.use('/ad-slots', adSlotsRoutes);
-router.use('/placements', placementsRoutes);
-router.use('/dashboard', dashboardRoutes);
+// Public routes
 router.use('/health', healthRoutes);
+router.use('/auth', authRoutes);
+router.use('/ad-slots', adSlotsRoutes);
+
+// Protected routes
+router.use('/campaigns', requireAuth, campaignsRoutes);
+router.use('/sponsors', requireAuth, sponsorsRoutes);
+router.use('/publishers', requireAuth, publishersRoutes);
+router.use('/placements', requireAuth, placementsRoutes);
+router.use('/dashboard', requireAuth, dashboardRoutes);
 
 export default router;
