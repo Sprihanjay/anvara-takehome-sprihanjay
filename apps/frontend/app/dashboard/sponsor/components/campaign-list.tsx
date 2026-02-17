@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import Link from 'next/link';
 import { deleteCampaign } from '../actions';
 import { CampaignForm } from './campaign-form';
 import { CampaignCard } from './campaign-card';
@@ -11,7 +12,6 @@ interface CampaignListProps {
 }
 
 export function CampaignList({ campaigns }: CampaignListProps) {
-  const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -30,28 +30,15 @@ export function CampaignList({ campaigns }: CampaignListProps) {
     <div>
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-2xl font-bold">My Campaigns</h2>
-        <button
-          onClick={() => setShowCreateForm(true)}
+        <Link
+          href="/dashboard/sponsor/new"
           className="rounded-lg bg-[--color-primary] px-4 py-2 text-sm text-white hover:opacity-90"
         >
           Create Campaign
-        </button>
+        </Link>
       </div>
 
-      {showCreateForm && (
-        <div className="mb-6 rounded-lg border border-[--color-border] bg-white p-4">
-          <h3 className="mb-4 text-lg font-semibold">New Campaign</h3>
-          <CampaignForm onSuccess={() => setShowCreateForm(false)} />
-          <button
-            onClick={() => setShowCreateForm(false)}
-            className="mt-2 text-sm text-[--color-muted] hover:underline"
-          >
-            Cancel
-          </button>
-        </div>
-      )}
-
-      {campaigns.length === 0 && !showCreateForm ? (
+      {campaigns.length === 0 ? (
         <div className="rounded-lg border border-dashed border-[--color-border] p-8 text-center text-[--color-muted]">
           No campaigns yet. Create your first campaign to get started.
         </div>
@@ -62,7 +49,7 @@ export function CampaignList({ campaigns }: CampaignListProps) {
               {editingId === campaign.id ? (
                 <div className="rounded-lg border border-[--color-border] p-4">
                   <h3 className="mb-4 text-lg font-semibold">Edit Campaign</h3>
-                  <CampaignForm campaign={campaign} onSuccess={() => setEditingId(null)} />
+                  <CampaignForm campaign={campaign} />
                   <button
                     onClick={() => setEditingId(null)}
                     className="mt-2 text-sm text-[--color-muted] hover:underline"

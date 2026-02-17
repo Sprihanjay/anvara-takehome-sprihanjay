@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useEffect } from 'react';
+import { useActionState } from 'react';
 import { createCampaign, updateCampaign, type ActionResult } from '../actions';
 import { SubmitButton } from '@/app/components/submit-button';
 import type { Campaign } from '@/lib/types';
@@ -15,7 +15,6 @@ const CAMPAIGN_STATUSES = [
 
 interface CampaignFormProps {
   campaign?: Campaign;
-  onSuccess?: () => void;
 }
 
 const initialState: ActionResult = {};
@@ -24,18 +23,12 @@ function toDateInputValue(dateStr: string): string {
   return new Date(dateStr).toISOString().split('T')[0];
 }
 
-export function CampaignForm({ campaign, onSuccess }: CampaignFormProps) {
+export function CampaignForm({ campaign }: CampaignFormProps) {
   const isEdit = !!campaign;
 
   const boundAction = isEdit ? updateCampaign.bind(null, campaign.id) : createCampaign;
 
   const [state, formAction] = useActionState(boundAction, initialState);
-
-  useEffect(() => {
-    if (state.success && onSuccess) {
-      onSuccess();
-    }
-  }, [state.success, onSuccess]);
 
   return (
     <form action={formAction} className="space-y-4">

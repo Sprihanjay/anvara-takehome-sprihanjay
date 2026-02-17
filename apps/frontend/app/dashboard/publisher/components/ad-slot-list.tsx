@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
+import Link from 'next/link';
 import { deleteAdSlot } from '../actions';
 import { AdSlotForm } from './ad-slot-form';
 import { AdSlotCard } from './ad-slot-card';
@@ -11,7 +12,6 @@ interface AdSlotListProps {
 }
 
 export function AdSlotList({ adSlots }: AdSlotListProps) {
-  const [showCreateForm, setShowCreateForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
 
@@ -30,28 +30,15 @@ export function AdSlotList({ adSlots }: AdSlotListProps) {
     <div>
       <div className="mb-4 flex items-center justify-between">
         <h2 className="text-2xl font-bold">My Ad Slots</h2>
-        <button
-          onClick={() => setShowCreateForm(true)}
+        <Link
+          href="/dashboard/publisher/new"
           className="rounded-lg bg-[--color-primary] px-4 py-2 text-sm text-white hover:opacity-90"
         >
           Create Ad Slot
-        </button>
+        </Link>
       </div>
 
-      {showCreateForm && (
-        <div className="mb-6 rounded-lg border border-[--color-border] bg-white p-4">
-          <h3 className="mb-4 text-lg font-semibold">New Ad Slot</h3>
-          <AdSlotForm onSuccess={() => setShowCreateForm(false)} />
-          <button
-            onClick={() => setShowCreateForm(false)}
-            className="mt-2 text-sm text-[--color-muted] hover:underline"
-          >
-            Cancel
-          </button>
-        </div>
-      )}
-
-      {adSlots.length === 0 && !showCreateForm ? (
+      {adSlots.length === 0 ? (
         <div className="rounded-lg border border-dashed border-[--color-border] p-8 text-center text-[--color-muted]">
           No ad slots yet. Create your first ad slot to start earning.
         </div>
@@ -62,7 +49,7 @@ export function AdSlotList({ adSlots }: AdSlotListProps) {
               {editingId === slot.id ? (
                 <div className="rounded-lg border border-[--color-border] p-4">
                   <h3 className="mb-4 text-lg font-semibold">Edit Ad Slot</h3>
-                  <AdSlotForm adSlot={slot} onSuccess={() => setEditingId(null)} />
+                  <AdSlotForm adSlot={slot} />
                   <button
                     onClick={() => setEditingId(null)}
                     className="mt-2 text-sm text-[--color-muted] hover:underline"

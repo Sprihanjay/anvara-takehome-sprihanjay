@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useEffect } from 'react';
+import { useActionState } from 'react';
 import { createAdSlot, updateAdSlot, type ActionResult } from '../actions';
 import { SubmitButton } from '@/app/components/submit-button';
 import type { AdSlot } from '@/lib/types';
@@ -9,23 +9,16 @@ const AD_SLOT_TYPES = ['DISPLAY', 'VIDEO', 'NATIVE', 'NEWSLETTER', 'PODCAST'] as
 
 interface AdSlotFormProps {
   adSlot?: AdSlot;
-  onSuccess?: () => void;
 }
 
 const initialState: ActionResult = {};
 
-export function AdSlotForm({ adSlot, onSuccess }: AdSlotFormProps) {
+export function AdSlotForm({ adSlot }: AdSlotFormProps) {
   const isEdit = !!adSlot;
 
   const boundAction = isEdit ? updateAdSlot.bind(null, adSlot.id) : createAdSlot;
 
   const [state, formAction] = useActionState(boundAction, initialState);
-
-  useEffect(() => {
-    if (state.success && onSuccess) {
-      onSuccess();
-    }
-  }, [state.success, onSuccess]);
 
   return (
     <form action={formAction} className="space-y-4">

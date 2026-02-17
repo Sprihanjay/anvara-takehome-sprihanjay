@@ -1,6 +1,7 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4291';
@@ -80,7 +81,7 @@ export async function createCampaign(
   }
 
   revalidatePath('/dashboard/sponsor');
-  return { success: true };
+  redirect('/dashboard/sponsor');
 }
 
 export async function updateCampaign(
