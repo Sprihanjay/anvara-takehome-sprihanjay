@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { getAdSlot } from '@/lib/api';
 import { authClient } from '@/auth-client';
 
@@ -50,6 +51,7 @@ interface Props {
 }
 
 export function AdSlotDetail({ id }: Props) {
+  const router = useRouter();
   const [adSlot, setAdSlot] = useState<AdSlot | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -361,7 +363,10 @@ export function AdSlotDetail({ id }: Props) {
                   <p className="text-sm text-gray-600 mb-2">
                     {user ? 'Only sponsors can request placements' : 'Log in as a sponsor to request'}
                   </p>
-                  <button disabled className="w-full rounded-2xl bg-gray-200 py-3 font-bold text-gray-400 cursor-not-allowed">
+                  <button
+                    onClick={() => router.push('/login')}
+                    className="w-full rounded-2xl bg-[#4057FE] py-3 text-white font-bold hover:opacity-90 transition-all shadow-md hover:shadow-lg cursor-pointer"
+                  >
                     Get Started Now
                   </button>
                 </div>

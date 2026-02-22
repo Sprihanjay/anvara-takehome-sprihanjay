@@ -40,14 +40,14 @@ export function CustomSelect({ value, onChange, options, placeholder, className 
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between gap-2 rounded-2xl bg-[#F7F8F9] px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none min-w-[140px]"
+        className="flex items-center justify-between gap-2 rounded-2xl bg-[#F7F8F9] px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none"
       >
         <span>{selectedOption?.label || placeholder || 'Select'}</span>
         <ChevronDown className={`h-4 w-4 text-gray-400 transition-transform ${isOpen ? 'rotate-180' : ''}`} />
       </button>
 
       {isOpen && (
-        <div className="absolute left-0 z-10 mt-2 w-full min-w-[160px] origin-top-left rounded-2xl bg-white shadow-lg focus:outline-none p-1">
+        <div className="absolute left-0 z-10 mt-2 w-full origin-top-left rounded-2xl bg-white shadow-lg focus:outline-none p-1">
           <div className="py-1">
             {options.map((option) => (
               <button

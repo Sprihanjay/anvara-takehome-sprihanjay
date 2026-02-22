@@ -23,7 +23,7 @@ export default async function PublisherDashboard() {
 
   return (
     <div className="space-y-6">
-      <AdSlotList adSlots={adSlots} />
+      <AdSlotList initialAdSlots={adSlots} />
     </div>
   );
 }

@@ -9,6 +9,7 @@ export async function api<T>(endpoint: string, options?: RequestInit): Promise<T
     ...options,
   });
   if (!res.ok) throw new Error('API request failed');
+  if (res.status === 204) return {} as T;
   return res.json();
 }
 
@@ -25,6 +26,8 @@ export const getAdSlots = (publisherId?: string) =>
 export const getAdSlot = (id: string) => api<AdSlot>(`/api/ad-slots/${id}`);
 export const createAdSlot = (data: Partial<AdSlot>) =>
   api<AdSlot>('/api/ad-slots', { method: 'POST', body: JSON.stringify(data) });
+export const deleteAdSlot = (id: string) =>
+  api<void>(`/api/ad-slots/${id}`, { method: 'DELETE' });
 
 // Placements
 export const getPlacements = () => api<Placement[]>('/api/placements');

@@ -19,10 +19,10 @@ interface AdSlotCardProps {
 
 export function AdSlotCard({ adSlot, onEdit, onDelete, isDeleting }: AdSlotCardProps) {
   return (
-    <div className="rounded-lg border border-[--color-border] p-4">
+    <div className="bg-white text-black rounded-4xl border shadow-xl p-6 gap-4 border-gray-50">
       <div className="mb-2 flex items-start justify-between">
-        <h3 className="font-semibold">{adSlot.name}</h3>
-        <span className={`rounded px-2 py-0.5 text-xs ${typeColors[adSlot.type] || 'bg-gray-100'}`}>
+        <h3 className="font-extrabold">{adSlot.name}</h3>
+        <span className={`font-bold rounded-2xl px-3 py-0.5 text-xs ${typeColors[adSlot.type] || 'bg-gray-100'}`}>
           {adSlot.type}
         </span>
       </div>
@@ -33,26 +33,26 @@ export function AdSlotCard({ adSlot, onEdit, onDelete, isDeleting }: AdSlotCardP
 
       <div className="mb-3 flex items-center justify-between">
         <span
-          className={`text-sm ${adSlot.isAvailable ? 'text-green-600' : 'text-[--color-muted]'}`}
+          className={`text-sm font-medium ${adSlot.isAvailable ? 'text-green-600' : 'text-[--color-muted]'}`}
         >
           {adSlot.isAvailable ? 'Available' : 'Booked'}
         </span>
-        <span className="font-semibold text-[--color-primary]">
+        <span className="font-bold text-[#4057FE]">
           ${Number(adSlot.basePrice).toLocaleString()}/mo
         </span>
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 justify-end">
         <button
           onClick={onEdit}
-          className="rounded bg-[--color-primary] px-3 py-1 text-xs text-white hover:opacity-90"
+          className="font-bold rounded-2xl bg-[#DBEAFF] px-3 py-1 text-xs text-[#165DFC] hover:opacity-90 hover:cursor-pointer"
         >
           Edit
         </button>
         <button
           onClick={onDelete}
           disabled={isDeleting}
-          className="rounded bg-red-500 px-3 py-1 text-xs text-white hover:opacity-90 disabled:opacity-50"
+          className="rounded-2xl font-bold bg-[#FFE2E2] px-3 py-1 text-xs text-[#E7000B] hover:opacity-90 disabled:opacity-50 hover:cursor-pointer"
         >
           {isDeleting ? 'Deleting...' : 'Delete'}
         </button>

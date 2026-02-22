@@ -6,7 +6,7 @@ export default function PublisherDashboardLoading() {
         {Array.from({ length: 3 }).map((_, i) => (
           <div
             key={i}
-            className="h-40 animate-pulse rounded-lg border border-[--color-border] bg-gray-100"
+            className="h-40 animate-pulse rounded-lg bg-gray-200"
           />
         ))}
       </div>
