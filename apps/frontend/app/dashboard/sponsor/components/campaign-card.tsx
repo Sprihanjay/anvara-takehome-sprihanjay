@@ -22,11 +22,11 @@ export function CampaignCard({ campaign, onEdit, onDelete, isDeleting }: Campaig
     campaign.budget > 0 ? (Number(campaign.spent) / Number(campaign.budget)) * 100 : 0;
 
   return (
-    <div className="rounded-lg border border-[--color-border] p-4">
+    <div className="bg-white text-black rounded-4xl border shadow-xl p-6 gap-4 border-gray-50">
       <div className="mb-2 flex items-start justify-between">
-        <h3 className="font-semibold">{campaign.name}</h3>
+        <h3 className=" font-extrabold">{campaign.name}</h3>
         <span
-          className={`rounded px-2 py-0.5 text-xs ${statusColors[campaign.status] || 'bg-gray-100'}`}
+          className={`font-bold rounded-2xl px-3 py-0.5 text-xs ${statusColors[campaign.status] || 'bg-gray-100'}`}
         >
           {campaign.status}
         </span>
@@ -59,14 +59,14 @@ export function CampaignCard({ campaign, onEdit, onDelete, isDeleting }: Campaig
       <div className="flex gap-2">
         <button
           onClick={onEdit}
-          className="rounded bg-[--color-primary] px-3 py-1 text-xs text-white hover:opacity-90"
+          className="font-bold rounded-2xl bg-[#DBEAFF] px-3 py-1 text-xs text-[#165DFC] hover:opacity-90 hover:cursor-pointer"
         >
           Edit
         </button>
         <button
           onClick={onDelete}
           disabled={isDeleting}
-          className="rounded bg-red-500 px-3 py-1 text-xs text-white hover:opacity-90 disabled:opacity-50"
+          className="rounded-2xl font-bold bg-[#FFE2E2] px-3 py-1 text-xs text-[#E7000B] hover:opacity-90 disabled:opacity-50 hover:cursor-pointer"
         >
           {isDeleting ? 'Deleting...' : 'Delete'}
         </button>

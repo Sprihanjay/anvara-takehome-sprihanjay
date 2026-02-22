@@ -2,10 +2,12 @@
 
 import { useState, useTransition } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { deleteCampaign } from '../actions';
 import { CampaignForm } from './campaign-form';
 import { CampaignCard } from './campaign-card';
 import type { Campaign } from '@/lib/types';
+import PlusImg from "../../../assets/images/plusimg.svg";
 
 interface CampaignListProps {
   campaigns: Campaign[];
@@ -32,9 +34,10 @@ export function CampaignList({ campaigns }: CampaignListProps) {
         <h2 className="text-2xl font-bold">My Campaigns</h2>
         <Link
           href="/dashboard/sponsor/new"
-          className="rounded-lg bg-[--color-primary] px-4 py-2 text-sm text-white hover:opacity-90"
+          className="flex items-center gap-2 font-semibold rounded-2xl bg-black px-4 py-2 text-sm text-white transition-colors hover:bg-[#4057FE]"
         >
-          Create Campaign
+          <Image src={PlusImg} alt="Create Campaign" width={15} height={15} className="block" />
+          <span>Create Campaign</span>
         </Link>
       </div>
 
@@ -47,15 +50,12 @@ export function CampaignList({ campaigns }: CampaignListProps) {
           {campaigns.map((campaign) => (
             <div key={campaign.id}>
               {editingId === campaign.id ? (
-                <div className="rounded-lg border border-[--color-border] p-4">
+                <div className="bg-white text-black rounded-4xl border shadow-xl p-6 gap-4 border-gray-50">
                   <h3 className="mb-4 text-lg font-semibold">Edit Campaign</h3>
-                  <CampaignForm campaign={campaign} />
-                  <button
-                    onClick={() => setEditingId(null)}
-                    className="mt-2 text-sm text-[--color-muted] hover:underline"
-                  >
-                    Cancel
-                  </button>
+                  <CampaignForm 
+                    campaign={campaign} 
+                    onCancel={() => setEditingId(null)} 
+                  />
                 </div>
               ) : (
                 <CampaignCard

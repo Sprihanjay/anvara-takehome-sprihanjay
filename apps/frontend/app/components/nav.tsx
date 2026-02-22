@@ -30,7 +30,7 @@ export function Nav() {
   // The current page's link should be highlighted differently
 
   return (
-    <header className="border-b border-[--color-border]">
+    <header className="border-b border-[--color-border] bg-white">
       <nav className="mx-auto flex max-w-6xl items-center justify-between p-4">
         <Link href="/" className="text-xl font-bold text-[--color-primary]">
           Anvara

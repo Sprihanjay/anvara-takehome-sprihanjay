@@ -1,6 +1,5 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import Link from 'next/link';
 import { auth } from '@/auth';
 import { getUserRole } from '@/lib/auth-helpers';
 import { CampaignForm } from '../components/campaign-form';
@@ -20,18 +19,15 @@ export default async function NewCampaignPage() {
   }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center gap-4">
-        <Link
-          href="/dashboard/sponsor"
-          className="text-[--color-muted] hover:text-[--color-foreground]"
-        >
-          ← Back
-        </Link>
+    <div className="space-y-4">
+      <div className="items-center grid gap-1">
         <h1 className="text-2xl font-bold">Create New Campaign</h1>
+        <div className=' text-sm text-gray-600'>
+          Set up a new campaign
+        </div>
       </div>
 
-      <div className="rounded-lg border border-[--color-border] bg-white p-6">
+      <div className="bg-white text-black rounded-4xl border shadow-xl p-6 gap-4 border-gray-50">
         <CampaignForm />
       </div>
     </div>
