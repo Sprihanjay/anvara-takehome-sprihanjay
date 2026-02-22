@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, Target } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { deleteCampaign } from '../actions';
 import { CampaignForm } from './campaign-form';
 import { CampaignCard } from './campaign-card';

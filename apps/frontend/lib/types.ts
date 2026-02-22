@@ -35,7 +35,7 @@ export interface AdSlot {
   basePrice: number;
   isAvailable: boolean;
   publisherId: string;
-  publisher?: { id: string; name: string; category?: string; monthlyViews?: number };
+  publisher?: { id: string; name: string; category?: string; monthlyViews?: number; isVerified?: boolean };
   _count?: { placements: number };
 }
 
