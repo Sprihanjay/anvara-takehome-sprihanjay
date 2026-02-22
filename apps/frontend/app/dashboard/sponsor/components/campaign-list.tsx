@@ -61,10 +61,11 @@ export function CampaignList({ campaigns }: CampaignListProps) {
         </div>
         <Link
           href="/dashboard/sponsor/new"
-          className="flex items-center gap-2 font-semibold rounded-2xl bg-black px-4 py-2 text-sm text-white transition-colors hover:bg-btn-primary-hover"
+          className="flex items-center justify-center gap-2 font-semibold rounded-2xl bg-black p-2.5 md:px-4 md:py-2 text-sm text-white transition-colors hover:bg-btn-primary-hover"
+          title="New campaign"
         >
-          <Image src={PlusImg} alt="Create Campaign" width={15} height={15} className="block" />
-          <span>New campaign</span>
+          <Image src={PlusImg} alt="New campaign" width={15} height={15} className="block shrink-0" />
+          <span className="hidden md:inline">New campaign</span>
         </Link>
       </div>
 

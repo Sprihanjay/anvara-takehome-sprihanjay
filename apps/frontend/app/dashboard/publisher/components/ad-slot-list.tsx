@@ -81,17 +81,18 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
   return (
     <div className="space-y-8">
       {/* Header & Stats */}
-      <div className="flex flex-col gap-8 md:flex-row md:items-start md:justify-between">
-        <div className="space-y-1">
+      <div className="mb-8 flex items-center justify-between">
+        <div>
           <h1 className="text-2xl font-bold tracking-tight text-gray-900">Ad Slots</h1>
-          <p className="text-gray-600">Manage your advertising inventory and pricing</p>
+          <p className="mt-1 text-gray-600">Manage your advertising inventory and pricing</p>
         </div>
         <button
           onClick={() => router.push('/dashboard/publisher/new')}
-          className="flex items-center gap-2 rounded-2xl bg-black px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-btn-primary-hover"
+          className="flex items-center justify-center gap-2 rounded-2xl bg-black p-2.5 md:px-4 md:py-2 text-sm font-semibold text-white transition-colors hover:bg-btn-primary-hover shrink-0"
+          title="Create Ad Slot"
         >
-          <Image src={PlusImg} alt="Add" width={15} height={15} />
-          Create Ad Slot
+          <Image src={PlusImg} alt="Create Ad Slot" width={15} height={15} className="block shrink-0" />
+          <span className="hidden md:inline">Create Ad Slot</span>
         </button>
       </div>
 

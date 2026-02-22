@@ -4,10 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import AnvaraLogo from '@/app/assets/images/anvara.png';
+import AnvaraMobile from '@/app/assets/images/Anvara_mobile.jpeg';
 import { useEffect, useState, useRef } from 'react';
 import { authClient } from '@/auth-client';
 import { useUserRole } from '@/hooks/useUserRole';
 import { useClickOutside } from '@/hooks/useClickOutside';
+import { ChevronDown } from 'lucide-react';
 
 export function Nav() {
   const pathname = usePathname();
@@ -16,11 +18,29 @@ export function Nav() {
   const user = session?.user;
   const role = useUserRole(user?.id ?? undefined);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSectionDropdownOpen, setIsSectionDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const sectionDropdownRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
   const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, opacity: 0 });
 
   useClickOutside(dropdownRef, () => setIsDropdownOpen(false));
+  useClickOutside(sectionDropdownRef, () => setIsSectionDropdownOpen(false));
+
+  const sectionLabel =
+    pathname.startsWith('/marketplace')
+      ? 'Marketplace'
+      : pathname.startsWith('/dashboard/sponsor')
+        ? 'Campaigns'
+        : pathname.startsWith('/dashboard/publisher')
+          ? 'My Ad Slots'
+          : 'Marketplace';
+
+  const sectionLinks = [
+    { href: '/marketplace', label: 'Marketplace' },
+    ...(user && role === 'sponsor' ? [{ href: '/dashboard/sponsor', label: 'Campaigns' }] : []),
+    ...(user && role === 'publisher' ? [{ href: '/dashboard/publisher', label: 'My Ad Slots' }] : []),
+  ];
 
   useEffect(() => {
     function updatePillPosition() {
@@ -48,17 +68,33 @@ export function Nav() {
     };
   }, [pathname, role]);
 
-  // TODO: Add active link styling using usePathname() from next/navigation
-  // The current page's link should be highlighted differently
-
   return (
     <header className="sticky top-4 z-50 mx-auto max-w-6xl w-full px-4 mb-8">
       <nav className="relative flex items-center justify-between rounded-2xl border border-white/50 bg-white/40 p-4 shadow-lg backdrop-blur-lg backdrop-saturate-150">
-        <Link href="/" className="flex items-center cursor-pointer">
-          <Image src={AnvaraLogo} alt="Anvara" height={20} className="h-5 w-auto" priority unoptimized />
+        <Link href="/" className="flex items-center cursor-pointer shrink-0">
+          <Image
+            src={AnvaraMobile}
+            alt="Anvara"
+            width={32}
+            height={32}
+            className="h-8 w-8 md:hidden rounded-lg object-contain"
+            priority
+          />
+          <Image
+            src={AnvaraLogo}
+            alt="Anvara"
+            height={20}
+            className="h-5 w-auto hidden md:block"
+            priority
+            unoptimized
+          />
         </Link>
 
-        <div ref={navRef} className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 p-1">
+        {/* Desktop: pill nav links */}
+        <div
+          ref={navRef}
+          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-2 p-1 hidden md:flex"
+        >
           <div
             className="absolute bottom-1 top-1 rounded-full bg-nav-pill shadow-sm backdrop-blur-md transition-all duration-300 ease-out"
             style={{
@@ -111,6 +147,32 @@ export function Nav() {
             >
               My Ad Slots
             </Link>
+          )}
+        </div>
+
+        {/* Mobile: section dropdown */}
+        <div className="relative md:hidden" ref={sectionDropdownRef}>
+          <button
+            type="button"
+            onClick={() => setIsSectionDropdownOpen(!isSectionDropdownOpen)}
+            className="flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-primary bg-white/80 border border-gray-200/80 min-w-[120px] justify-center"
+          >
+            <span>{sectionLabel}</span>
+            <ChevronDown className={`h-4 w-4 transition-transform ${isSectionDropdownOpen ? 'rotate-180' : ''}`} />
+          </button>
+          {isSectionDropdownOpen && (
+            <div className="absolute left-1/2 -translate-x-1/2 top-full mt-2 w-48 rounded-2xl border border-gray-100 bg-white py-1 shadow-xl z-50">
+              {sectionLinks.map(({ href, label }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  onClick={() => setIsSectionDropdownOpen(false)}
+                  className={`block px-4 py-2.5 text-sm font-medium ${pathname.startsWith(href) ? 'text-primary bg-avatar-circle/30' : 'text-gray-700 hover:bg-gray-50'}`}
+                >
+                  {label}
+                </Link>
+              ))}
+            </div>
           )}
         </div>
 
