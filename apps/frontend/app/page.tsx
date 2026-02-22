@@ -26,7 +26,7 @@ export default function Home() {
           </p>
           <a
             href="/login"
-            className="rounded-2xl bg-[#4057FE] px-6 py-3 text-white font-semibold hover:opacity-90 transition-opacity mb-16"
+            className="rounded-2xl bg-btn-primary px-6 py-3 text-white font-semibold hover:opacity-90 transition-opacity mb-16"
           >
             Get Started
           </a>

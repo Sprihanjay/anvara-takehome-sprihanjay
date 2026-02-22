@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { Search } from 'lucide-react';
 import { getAdSlots } from '@/lib/api';
 import type { AdSlot } from '@/lib/types';
-import { CustomSelect } from './custom-select';
+import { CustomSelect } from '@/components/ui/CustomSelect';
 
 const typeColors: Record<string, string> = {
   DISPLAY: 'bg-blue-100 text-blue-700',
@@ -125,7 +125,7 @@ export function AdSlotGrid() {
             placeholder="Search placements..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-2xl border border-gray-200 bg-[#F7F8F9] py-3 pl-12 pr-4 text-sm text-black placeholder:text-gray-400 focus:border-black focus:outline-none"
+            className="w-full rounded-2xl border border-gray-200 bg-[var(--color-background)] py-3 pl-12 pr-4 text-sm text-black placeholder:text-gray-400 focus:border-black focus:outline-none"
           />
         </div>
 
@@ -182,7 +182,7 @@ export function AdSlotGrid() {
                 <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
               Clear Filters
-              <span className="ml-1 rounded-full bg-[#DADEFD] px-2 py-0.5 text-xs text-[#4057FE] font-semibold">{activeFilterCount}</span>
+              <span className="ml-1 rounded-full bg-[var(--bg-primary-light)] px-2 py-0.5 text-xs text-[var(--text-primary)] font-semibold">{activeFilterCount}</span>
             </button>
           )}
         </div>
@@ -214,7 +214,7 @@ export function AdSlotGrid() {
                 <svg
                   className="ml-2"
                   xmlns="http://www.w3.org/2000/svg"
-                  width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4057fe" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                  width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--text-primary)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
                   aria-hidden="true"
                 >
                   <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -235,7 +235,7 @@ export function AdSlotGrid() {
               <div className="flex gap-3 mt-1 text-xs text-gray-500">
                 {slot.publisher.monthlyViews && (
                   <span className="flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#767e8d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-muted-icon)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <polygon points="5 3 19 12 5 21 5 3"></polygon>
                     </svg>
                     {slot.publisher.monthlyViews.toLocaleString()} views/mo
@@ -243,7 +243,7 @@ export function AdSlotGrid() {
                 )}
                 {slot.publisher.subscriberCount && (
                   <span className="flex items-center gap-1">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#767e8d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-muted-icon)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
                       <circle cx="9" cy="7" r="4"></circle>
                       <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>

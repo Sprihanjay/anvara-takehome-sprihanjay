@@ -3,10 +3,8 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4291';
-
-const VALID_TYPES = ['DISPLAY', 'VIDEO', 'NATIVE', 'NEWSLETTER', 'PODCAST'];
+import { API_URL } from '@/constants/api';
+import { VALID_AD_SLOT_TYPES } from '@/constants/ad-slot';
 
 export interface ActionResult {
   success?: boolean;
@@ -37,7 +35,7 @@ export async function createAdSlot(
   if (!name || name.trim().length < 3) {
     fieldErrors.name = 'Name must be at least 3 characters';
   }
-  if (!type || !VALID_TYPES.includes(type)) {
+  if (!type || !VALID_AD_SLOT_TYPES.includes(type)) {
     fieldErrors.type = 'Please select a valid type';
   }
   const basePrice = parseFloat(basePriceStr);

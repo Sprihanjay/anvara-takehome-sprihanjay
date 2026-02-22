@@ -2,16 +2,9 @@
 
 import { useActionState, useEffect } from 'react';
 import { createCampaign, updateCampaign, type ActionResult } from '../actions';
-import { SubmitButton } from '@/app/components/submit-button';
+import { SubmitButton } from '@/components/ui/SubmitButton';
 import type { Campaign } from '@/lib/types';
-
-const CAMPAIGN_STATUSES = [
-  'DRAFT',
-  'ACTIVE',
-  'PAUSED',
-  'COMPLETED',
-  'CANCELLED',
-] as const;
+import { CAMPAIGN_STATUSES } from '@/constants/campaign';
 
 interface CampaignFormProps {
   campaign?: Campaign;
@@ -41,7 +34,7 @@ export function CampaignForm({ campaign, onCancel }: CampaignFormProps) {
   return (
     <form action={formAction} className="space-y-4">
       <div>
-        <label htmlFor="campaign-name" className="block text-md font-medium #A1A7AF">
+        <label htmlFor="campaign-name" className="block text-md font-medium">
           Campaign Name
         </label>
         <input
@@ -52,7 +45,7 @@ export function CampaignForm({ campaign, onCancel }: CampaignFormProps) {
           required
           minLength={3}
           placeholder="Enter your campaign name"
-          className="py-3 mt-2 block w-full rounded-xl bg-[#F5F5F5] px-4 text-sm border border-transparent focus:outline-none focus:border-2 focus:invalid:border-red-500 focus:valid:border-black"
+          className="py-3 mt-2 block w-full rounded-xl bg-[var(--bg-input)] px-4 text-sm border border-transparent focus:outline-none focus:border-2 focus:invalid:border-red-500 focus:valid:border-black"
         />
         {state.fieldErrors?.name && (
           <p className="mt-1 text-xs text-red-600">{state.fieldErrors.name}</p>
@@ -68,8 +61,7 @@ export function CampaignForm({ campaign, onCancel }: CampaignFormProps) {
           name="description"
           defaultValue={campaign?.description ?? ''}
           rows={2}
-          // placeholder='Describe your campaign description'
-         className="py-3 mt-2 block w-full rounded-xl bg-[#F5F5F5] px-4 text-sm border border-transparent focus:outline-none focus:border-2 focus:invalid:border-red-500 focus:valid:border-black"
+          className="py-3 mt-2 block w-full rounded-xl bg-[var(--bg-input)] px-4 text-sm border border-transparent focus:outline-none focus:border-2 focus:invalid:border-red-500 focus:valid:border-black"
         />
       </div>
 
@@ -86,7 +78,7 @@ export function CampaignForm({ campaign, onCancel }: CampaignFormProps) {
           min="0"
           step="0.01"
           placeholder='25000'
-          className="mt-2 block w-full rounded-xl border border-transparent bg-[#F5F5F5] px-4 py-3 text-sm focus:outline-none focus:border-2 focus:invalid:border-red-500 focus:valid:border-black"
+          className="mt-2 block w-full rounded-xl border border-transparent bg-[var(--bg-input)] px-4 py-3 text-sm focus:outline-none focus:border-2 focus:invalid:border-red-500 focus:valid:border-black"
         />
         {state.fieldErrors?.budget && (
           <p className="mt-2 text-xs text-red-600">{state.fieldErrors.budget}</p>
@@ -104,7 +96,7 @@ export function CampaignForm({ campaign, onCancel }: CampaignFormProps) {
             name="startDate"
             defaultValue={campaign ? toDateInputValue(campaign.startDate) : undefined}
             required
-            className="mt-2 block w-full rounded-xl border border-transparent bg-[#F5F5F5] px-4 py-3 text-sm focus:border-2 focus:outline-none focus:invalid:border-red-500 focus:valid:border-black text-gray-500 valid:text-black"
+            className="mt-2 block w-full rounded-xl border border-transparent bg-[var(--bg-input)] px-4 py-3 text-sm focus:border-2 focus:outline-none focus:invalid:border-red-500 focus:valid:border-black text-gray-500 valid:text-black"
           />
           {state.fieldErrors?.startDate && (
             <p className="mt-2 text-xs text-red-600">{state.fieldErrors.startDate}</p>
@@ -120,7 +112,7 @@ export function CampaignForm({ campaign, onCancel }: CampaignFormProps) {
             name="endDate"
             defaultValue={campaign ? toDateInputValue(campaign.endDate) : undefined}
             required
-            className="mt-2 block w-full rounded-xl border border-transparent bg-[#F5F5F5] px-4 py-3 text-sm focus:border-2 focus:outline-none focus:invalid:border-red-500 focus:valid:border-black text-gray-500 valid:text-black"
+            className="mt-2 block w-full rounded-xl border border-transparent bg-[var(--bg-input)] px-4 py-3 text-sm focus:border-2 focus:outline-none focus:invalid:border-red-500 focus:valid:border-black text-gray-500 valid:text-black"
           />
           {state.fieldErrors?.endDate && (
             <p className="mt-2 text-xs text-red-600">{state.fieldErrors.endDate}</p>
@@ -137,7 +129,7 @@ export function CampaignForm({ campaign, onCancel }: CampaignFormProps) {
             id="campaign-status"
             name="status"
             defaultValue={campaign.status}
-             className="mt-2 block w-full rounded-xl border border-transparent bg-[#F5F5F5] px-4 py-3 text-sm focus:border-2 focus:border-black focus:outline-none"
+            className="mt-2 block w-full rounded-xl border border-transparent bg-[var(--bg-input)] px-4 py-3 text-sm focus:border-2 focus:border-black focus:outline-none"
           >
             {CAMPAIGN_STATUSES.map((s) => (
               <option key={s} value={s}>
@@ -158,19 +150,29 @@ export function CampaignForm({ campaign, onCancel }: CampaignFormProps) {
       )}
 
       <div className="flex items-center justify-end gap-4">
-        {onCancel && (
+        {isEdit && onCancel ? (
           <button
             type="button"
             onClick={onCancel}
-            className="text-sm font-semibold text-black hover:text-[#4057FE] transition-colors hover:cursor-pointer"
+            className="text-sm font-semibold text-black hover:text-[var(--text-primary)] transition-colors hover:cursor-pointer"
           >
             Cancel
+          </button>
+        ) : null}
+        {!isEdit && (
+          <button
+            type="submit"
+            name="status"
+            value="draft"
+            className="text-sm font-semibold text-black hover:text-[var(--text-primary)] transition-colors hover:cursor-pointer"
+          >
+            Save as draft
           </button>
         )}
         <SubmitButton
           label={isEdit ? 'Save Changes' : 'Create Campaign'}
           pendingLabel={isEdit ? 'Saving...' : 'Creating...'}
-          className="rounded-2xl bg-black px-4 py-3 text-sm font-semibold text-white hover:bg-[#4057FE] transition-colors disabled:opacity-50 hover:cursor-pointer"
+          className="rounded-2xl bg-black px-4 py-3 text-sm font-semibold text-white hover:bg-btn-primary-hover transition-colors disabled:opacity-50 hover:cursor-pointer"
         />
       </div>
     </form>

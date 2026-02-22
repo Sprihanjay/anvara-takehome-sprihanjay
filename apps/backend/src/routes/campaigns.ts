@@ -27,7 +27,7 @@ router.get('/:id', requireSponsor, async (req: Request, res: Response) => {
 
 // POST /api/campaigns - Create new campaign
 router.post('/', requireSponsor, validateCreateCampaign, async (req: Request, res: Response) => {
-  const { name, description, budget, cpmRate, cpcRate, startDate, endDate, targetCategories, targetRegions } =
+  const { name, description, budget, cpmRate, cpcRate, startDate, endDate, targetCategories, targetRegions, status } =
     req.body;
 
   const campaign = await campaignService.create(
@@ -41,6 +41,7 @@ router.post('/', requireSponsor, validateCreateCampaign, async (req: Request, re
       endDate: new Date(endDate),
       targetCategories,
       targetRegions,
+      ...(status !== undefined && { status }),
     },
     req.user!.sponsorId!,
   );

@@ -12,6 +12,7 @@ export interface CreateCampaignInput {
   endDate: Date;
   targetCategories?: string[];
   targetRegions?: string[];
+  status?: CampaignStatus;
   sponsorId: string;
 }
 

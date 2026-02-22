@@ -54,15 +54,15 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
       title: 'Total Slots',
       value: adSlots.length,
       icon: LayoutGrid,
-      color: 'bg-blue-500',
       bgColor: 'bg-blue-100',
+      iconColor: 'text-blue-700',
     },
     {
       title: 'Available',
       value: adSlots.filter((s) => s.isAvailable).length,
       icon: CheckCircle,
-      color: 'bg-emerald-500',
       bgColor: 'bg-emerald-100',
+      iconColor: 'text-emerald-700',
     },
     {
       title: 'Total Price',
@@ -73,8 +73,8 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
             ).toLocaleString()}`
           : '$0',
       icon: DollarSign,
-      color: 'bg-purple-500',
       bgColor: 'bg-purple-100',
+      iconColor: 'text-purple-700',
     },
   ];
 
@@ -88,7 +88,7 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
         </div>
         <button
           onClick={() => router.push('/dashboard/publisher/new')}
-          className="flex items-center gap-2 rounded-2xl bg-black px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#4057FE]"
+          className="flex items-center gap-2 rounded-2xl bg-black px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-btn-primary-hover"
         >
           <Image src={PlusImg} alt="Add" width={15} height={15} />
           Create Ad Slot
@@ -99,14 +99,14 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
         {stats.map((stat) => (
           <div
             key={stat.title}
-            className="flex items-center gap-4 rounded-3xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
+            className="flex items-center justify-between gap-4 rounded-3xl border border-gray-100 bg-white p-6 shadow-sm transition-shadow hover:shadow-md"
           >
-            <div className={`rounded-2xl p-3 ${stat.bgColor}`}>
-              <stat.icon className={`h-6 w-6 ${stat.color.replace('bg-', 'text-')}`} />
-            </div>
             <div>
               <p className="text-sm font-medium text-gray-600">{stat.title}</p>
               <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+            </div>
+            <div className={`rounded-2xl p-3 ${stat.bgColor}`}>
+              <stat.icon className={`h-6 w-6 ${stat.iconColor}`} />
             </div>
           </div>
         ))}
@@ -121,7 +121,7 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
               onClick={() => setFilter(f)}
               className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
                 filter === f
-                  ? 'bg-[#4057FE] text-white'
+                  ? 'bg-btn-primary text-white'
                   : 'border border-gray-200 text-gray-700 hover:border-gray-300'
               }`}
             >
@@ -136,7 +136,7 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
             placeholder="Search slots..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-2xl border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm outline-none focus:border-[#4057FE] focus:ring-2 focus:ring-[#4057FE]/20 sm:w-64"
+            className="w-full rounded-2xl border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm outline-none focus:border-[var(--bg-primary)] focus:ring-2 focus:ring-[var(--bg-primary)]/20 sm:w-64"
           />
         </div>
       </div>
@@ -156,7 +156,7 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
           {!searchQuery && (
             <button
               onClick={() => router.push('/dashboard/publisher/new')}
-              className="mt-6 flex items-center gap-2 rounded-2xl bg-black px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-[#4057FE]"
+              className="mt-6 flex items-center gap-2 rounded-2xl bg-black px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-btn-primary-hover"
             >
               <Plus className="h-4 w-4" />
               Create your first slot

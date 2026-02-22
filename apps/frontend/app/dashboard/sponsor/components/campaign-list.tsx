@@ -61,7 +61,7 @@ export function CampaignList({ campaigns }: CampaignListProps) {
         </div>
         <Link
           href="/dashboard/sponsor/new"
-          className="flex items-center gap-2 font-semibold rounded-2xl bg-black px-4 py-2 text-sm text-white transition-colors hover:bg-[#4057FE]"
+          className="flex items-center gap-2 font-semibold rounded-2xl bg-black px-4 py-2 text-sm text-white transition-colors hover:bg-btn-primary-hover"
         >
           <Image src={PlusImg} alt="Create Campaign" width={15} height={15} className="block" />
           <span>New campaign</span>
@@ -78,7 +78,7 @@ export function CampaignList({ campaigns }: CampaignListProps) {
               <p className="mt-1 text-xs text-gray-500">All campaigns created</p>
             </div>
             <div className="flex items-center justify-center p-3 bg-blue-100 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-target h-6 w-6 text-blue-600" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-target h-6 w-6 text-blue-700" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
             </div>
           </div>
         </div>
@@ -90,7 +90,7 @@ export function CampaignList({ campaigns }: CampaignListProps) {
               <p className="mt-1 text-xs text-gray-500">{totalCampaigns > 0 ? Math.round((activeCampaigns / totalCampaigns) * 100) : 0}% of total campaigns</p>
             </div>
             <div className="flex items-center justify-center p-3 bg-emerald-100 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-activity h-6 w-6 text-emerald-600" aria-hidden="true"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-activity h-6 w-6 text-emerald-700" aria-hidden="true"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"></path></svg>
             </div>
           </div>
         </div>
@@ -102,7 +102,7 @@ export function CampaignList({ campaigns }: CampaignListProps) {
               <p className="mt-1 text-xs text-gray-500">{totalCampaigns > 0 ? Math.round((completedCampaigns / totalCampaigns) * 100) : 0}% are completed</p>
             </div>
             <div className="flex items-center justify-center p-3 bg-purple-100 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-check h-6 w-6 text-purple-600" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-check h-6 w-6 text-purple-700" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>
             </div>
           </div>
         </div>
@@ -119,7 +119,7 @@ export function CampaignList({ campaigns }: CampaignListProps) {
                 onClick={() => setActiveFilter(tab as FilterTab)}
                 className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
                   activeFilter === tab
-                    ? 'bg-[#4057FE] text-white'
+                    ? 'bg-btn-primary text-white'
                     : 'border border-gray-200 text-gray-700 hover:border-gray-300'
                 }`}
               >

@@ -3,18 +3,8 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { headers } from 'next/headers';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4291';
-
-const VALID_STATUSES = [
-  'DRAFT',
-  'PENDING_REVIEW',
-  'APPROVED',
-  'ACTIVE',
-  'PAUSED',
-  'COMPLETED',
-  'CANCELLED',
-];
+import { API_URL } from '@/constants/api';
+import { VALID_CAMPAIGN_STATUSES } from '@/constants/campaign';
 
 export interface ActionResult {
   success?: boolean;
@@ -61,11 +51,13 @@ export async function createCampaign(
   }
 
   const cookie = await getAuthCookie();
+  const isDraft = formData.get('status') === 'draft';
   const body: Record<string, unknown> = {
     name: name.trim(),
     budget,
     startDate,
     endDate,
+    status: isDraft ? 'DRAFT' : 'ACTIVE',
   };
   if (description?.trim()) body.description = description.trim();
 
@@ -110,7 +102,7 @@ export async function updateCampaign(
   if (startDate && endDate && new Date(endDate) <= new Date(startDate)) {
     fieldErrors.endDate = 'End date must be after start date';
   }
-  if (status && !VALID_STATUSES.includes(status)) {
+  if (status && !VALID_CAMPAIGN_STATUSES.includes(status)) {
     fieldErrors.status = 'Invalid status';
   }
 

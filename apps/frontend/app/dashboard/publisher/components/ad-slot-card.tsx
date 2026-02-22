@@ -33,7 +33,7 @@ export function AdSlotCard({ adSlot, onEdit, onDelete, isDeleting }: AdSlotCardP
       )}
 
       {/* Price */}
-      <div className="rounded-2xl bg-[#F7F8F9] px-4 py-3">
+      <div className="rounded-2xl bg-[var(--color-background)] px-4 py-3">
         <div className="flex items-center justify-between">
           <span className="flex items-center gap-1.5 text-sm font-semibold text-[--color-muted]">
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100">
@@ -72,14 +72,14 @@ export function AdSlotCard({ adSlot, onEdit, onDelete, isDeleting }: AdSlotCardP
         <div className="flex gap-2">
           <button
             onClick={onEdit}
-            className="font-bold rounded-2xl bg-[#DBEAFF] px-5 py-2 text-sm text-[#165DFC] hover:opacity-90 hover:cursor-pointer"
+            className="font-bold rounded-2xl bg-btn-edit px-5 py-2 text-sm text-btn-edit hover:opacity-90 hover:cursor-pointer"
           >
             Edit
           </button>
           <button
             onClick={onDelete}
             disabled={isDeleting}
-            className="rounded-2xl font-bold bg-[#FFE2E2] px-5 py-2 text-sm text-[#E7000B] hover:opacity-90 disabled:opacity-50 hover:cursor-pointer"
+            className="rounded-2xl font-bold bg-btn-delete px-5 py-2 text-sm text-btn-delete hover:opacity-90 disabled:opacity-50 hover:cursor-pointer"
           >
             {isDeleting ? 'Deleting...' : 'Delete'}
           </button>

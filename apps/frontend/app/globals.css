@@ -9,16 +9,32 @@
 /* Custom theme variables - modify these to customize the marketplace look */
 :root {
   /* Primary brand colors */
-  --color-primary: #6366f1;
-  --color-primary-hover: #4f46e5;
+  --bg-primary: #4057FE;
+  --bg-primary-light: #DADEFD;
+  --text-primary: #4057FE;
+  --text-primary-light: #DADEFD;
+  --color-primary: #4057FE;
+  --color-primary-hover: #4057FE;
   --color-primary-light: #818cf8;
+
+  /* UI surfaces */
+  --color-background: #F7F8F9;
+  --bg-input: #F5F5F5;
+  --bg-pill: #C4CAFE;
+  --bg-avatar: #E5E8FF;
+  --bg-newsletter: #D9DDFC;
+  --bg-edit: #DBEAFF;
+  --text-edit: #165DFC;
+  --bg-delete: #FFE2E2;
+  --text-delete: #E7000B;
+  --label-muted: #A1A7AF;
+  --color-muted-icon: #767e8d;
 
   /* Secondary colors */
   --color-secondary: #10b981;
   --color-secondary-hover: #059669;
 
   /* Neutral colors */
-  --color-background: #F7F8F9;
   --color-foreground: #0f172a;
   --color-muted: #64748b;
   --color-border: #e2e8f0;
@@ -57,8 +73,52 @@ body {
 }
 
 /*
- * HINT: Use Tailwind v4 arbitrary values with CSS vars:
- * - bg-[--color-primary] for custom backgrounds
- * - text-[--color-foreground] for custom text colors
- * - p-[--spacing-container] for custom spacing
+ * Semantic utility classes so button/avatar colors resolve correctly
+ * (Tailwind arbitrary values with var() can fail for hover/background in some builds)
  */
+.bg-btn-primary {
+  background-color: var(--bg-primary);
+}
+.hover\:bg-btn-primary-hover:hover {
+  background-color: var(--color-primary-hover);
+}
+.bg-btn-edit {
+  background-color: var(--bg-edit);
+}
+.text-btn-edit {
+  color: var(--text-edit);
+}
+.bg-btn-delete {
+  background-color: var(--bg-delete);
+}
+.text-btn-delete {
+  color: var(--text-delete);
+}
+.bg-avatar-circle {
+  background-color: var(--bg-avatar);
+}
+.text-avatar-circle {
+  color: var(--text-primary);
+}
+.bg-nav-pill {
+  background-color: rgb(196 202 254 / 0.6);
+}
+.bg-surface-muted {
+  background-color: var(--color-background);
+}
+.bg-primary-light {
+  background-color: var(--bg-primary-light);
+}
+.text-primary {
+  color: var(--text-primary);
+}
+.border-primary-subtle {
+  border-color: rgb(64 87 254 / 0.1);
+}
+.focus-ring-primary:focus {
+  outline: 2px solid var(--bg-primary);
+  outline-offset: 2px;
+}
+.focus-ring-primary\/20:focus {
+  box-shadow: 0 0 0 2px rgb(64 87 254 / 0.2);
+}

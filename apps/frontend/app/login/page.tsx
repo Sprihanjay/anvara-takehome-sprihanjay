@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { authClient } from '@/auth-client';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4291';
+import { getUserRole } from '@/services/auth.service';
 
 export default function LoginPage() {
   const router = useRouter();
@@ -37,11 +37,10 @@ export default function LoginPage() {
           try {
             const userId = ctx.data?.user?.id;
             if (userId) {
-              const roleRes = await fetch(`${API_URL}/api/auth/role/${userId}`);
-              const roleData = await roleRes.json();
-              if (roleData.role === 'sponsor') {
+              const roleData = await getUserRole(userId);
+              if (roleData?.role === 'sponsor') {
                 router.push('/dashboard/sponsor');
-              } else if (roleData.role === 'publisher') {
+              } else if (roleData?.role === 'publisher') {
                 router.push('/dashboard/publisher');
               } else {
                 router.push('/');
@@ -68,7 +67,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-[#F7F8F9]">
+    <div className="flex min-h-[calc(100vh-4rem)] items-center justify-center bg-[var(--color-background)]">
       <div className="w-full max-w-md bg-white rounded-lg border border-gray-200 p-8 shadow-sm">
         <h1 className="mb-6 text-2xl font-bold text-center">Login to Anvara</h1>
 
@@ -86,7 +85,7 @@ export default function LoginPage() {
             <select
               value={role}
               onChange={(e) => setRole(e.target.value as 'sponsor' | 'publisher')}
-              className="mt-1 w-full rounded bg-[#F7F8F9] px-3 py-2 text-gray-900"
+              className="mt-1 w-full rounded bg-[var(--color-background)] px-3 py-2 text-gray-900"
             >
               <option value="sponsor">Sponsor (sponsor@example.com)</option>
               <option value="publisher">Publisher (publisher@example.com)</option>
@@ -96,7 +95,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-lg bg-[#4057FE] px-4 py-2 font-semibold text-white hover:opacity-90 disabled:opacity-50"
+            className="w-full rounded-lg bg-btn-primary px-4 py-2 font-semibold text-white hover:opacity-90 disabled:opacity-50"
           >
             {loading ? 'Logging in...' : `Login as ${role === 'sponsor' ? 'Sponsor' : 'Publisher'}`}
           </button>

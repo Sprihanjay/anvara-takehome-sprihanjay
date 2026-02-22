@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { getAdSlot } from '@/lib/api';
 import { authClient } from '@/auth-client';
+import { getUserRole } from '@/services/auth.service';
+import { API_URL } from '@/constants/api';
 
 interface AdSlot {
   id: string;
@@ -78,12 +80,8 @@ export function AdSlotDetail({ id }: Props) {
           const sessionUser = data.user as User;
           setUser(sessionUser);
 
-          // Fetch role info from backend
-          fetch(
-            `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4291'}/api/auth/role/${sessionUser.id}`
-          )
-            .then((res) => res.json())
-            .then((data) => setRoleInfo(data))
+          getUserRole(sessionUser.id)
+            .then(setRoleInfo)
             .catch(() => setRoleInfo(null))
             .finally(() => setRoleLoading(false));
         } else {
@@ -101,7 +99,7 @@ export function AdSlotDetail({ id }: Props) {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4291'}/api/ad-slots/${adSlot.id}/book`,
+        `${API_URL}/api/ad-slots/${adSlot.id}/book`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -132,7 +130,7 @@ export function AdSlotDetail({ id }: Props) {
 
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4291'}/api/ad-slots/${adSlot.id}/unbook`,
+        `${API_URL}/api/ad-slots/${adSlot.id}/unbook`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -207,8 +205,8 @@ export function AdSlotDetail({ id }: Props) {
         <div>
           <h2 className="text-xl font-bold mb-4">Audience & Reach</h2>
           <div className="space-y-4">
-            <div className="bg-[#F7F8F9] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-[#DADEFD] flex items-center justify-center text-[#4057FE]">
+            <div className="bg-[var(--color-background)] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
+              <div className="h-12 w-12 rounded-xl bg-[var(--bg-primary-light)] flex items-center justify-center text-[var(--text-primary)]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
                   <circle cx="12" cy="12" r="3"></circle>
@@ -220,8 +218,8 @@ export function AdSlotDetail({ id }: Props) {
               </div>
             </div>
 
-            <div className="bg-[#F7F8F9] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-[#DADEFD] flex items-center justify-center text-[#4057FE]">
+            <div className="bg-[var(--color-background)] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
+              <div className="h-12 w-12 rounded-xl bg-[var(--bg-primary-light)] flex items-center justify-center text-[var(--text-primary)]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                   <circle cx="9" cy="7" r="4"></circle>
@@ -235,8 +233,8 @@ export function AdSlotDetail({ id }: Props) {
               </div>
             </div>
 
-            <div className="bg-[#F7F8F9] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-[#DADEFD] flex items-center justify-center text-[#4057FE]">
+            <div className="bg-[var(--color-background)] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
+              <div className="h-12 w-12 rounded-xl bg-[var(--bg-primary-light)] flex items-center justify-center text-[var(--text-primary)]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
                   <line x1="7" y1="7" x2="7.01" y2="7"></line>
@@ -254,8 +252,8 @@ export function AdSlotDetail({ id }: Props) {
         <div>
           <h2 className="text-xl font-bold mb-4">Placement Details</h2>
           <div className="space-y-4">
-            <div className="bg-[#F7F8F9] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-[#DADEFD] flex items-center justify-center text-[#4057FE]">
+            <div className="bg-[var(--color-background)] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
+              <div className="h-12 w-12 rounded-xl bg-[var(--bg-primary-light)] flex items-center justify-center text-[var(--text-primary)]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                   <circle cx="12" cy="10" r="3"></circle>
@@ -272,8 +270,8 @@ export function AdSlotDetail({ id }: Props) {
               </div>
             </div>
 
-            <div className="bg-[#F7F8F9] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-[#DADEFD] flex items-center justify-center text-[#4057FE]">
+            <div className="bg-[var(--color-background)] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
+              <div className="h-12 w-12 rounded-xl bg-[var(--bg-primary-light)] flex items-center justify-center text-[var(--text-primary)]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
                   <line x1="8" y1="21" x2="16" y2="21"></line>
@@ -288,8 +286,8 @@ export function AdSlotDetail({ id }: Props) {
               </div>
             </div>
 
-            <div className="bg-[#F7F8F9] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-[#DADEFD] flex items-center justify-center text-[#4057FE]">
+            <div className="bg-[var(--color-background)] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
+              <div className="h-12 w-12 rounded-xl bg-[var(--bg-primary-light)] flex items-center justify-center text-[var(--text-primary)]">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="1" x2="12" y2="23"></line>
                   <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
@@ -309,7 +307,7 @@ export function AdSlotDetail({ id }: Props) {
         <div className="bg-white rounded-3xl p-6 shadow-xl border border-gray-100 sticky top-24">
           <div className="flex items-start justify-between gap-4 mb-6">
             <div>
-              <h3 className="text-3xl font-bold text-[#4057FE]">
+              <h3 className="text-3xl font-bold text-[var(--text-primary)]">
                 ${Number(adSlot.basePrice).toLocaleString()}
               </h3>
               <p className="text-gray-500 text-sm">per month</p>
@@ -349,7 +347,7 @@ export function AdSlotDetail({ id }: Props) {
                     <button
                       onClick={handleBooking}
                       disabled={booking}
-                      className="w-full rounded-2xl bg-[#4057FE] py-3 text-white font-bold hover:opacity-90 disabled:opacity-50 transition-all shadow-md hover:shadow-lg cursor-pointer disabled:cursor-not-allowed"
+                      className="w-full rounded-2xl bg-btn-primary py-3 text-white font-bold hover:opacity-90 disabled:opacity-50 transition-all shadow-md hover:shadow-lg cursor-pointer disabled:cursor-not-allowed"
                     >
                       {booking ? 'Processing...' : 'Book Now'}
                     </button>
@@ -362,7 +360,7 @@ export function AdSlotDetail({ id }: Props) {
                   </p>
                   <button
                     onClick={() => router.push('/login')}
-                    className="w-full rounded-2xl bg-[#4057FE] py-3 text-white font-bold hover:opacity-90 transition-all shadow-md hover:shadow-lg cursor-pointer"
+                    className="w-full rounded-2xl bg-btn-primary py-3 text-white font-bold hover:opacity-90 transition-all shadow-md hover:shadow-lg cursor-pointer"
                   >
                     Get Started Now
                   </button>
@@ -402,8 +400,8 @@ export function AdSlotDetail({ id }: Props) {
               <span>Cancel anytime before your placement goes live</span>
             </div>
             {adSlot.publisher?.isVerified && (
-              <div className="flex items-start gap-3 text-sm font-medium text-[#4057FE]">
-                <svg className="w-5 h-5 text-[#4057FE] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="flex items-start gap-3 text-sm font-medium text-[var(--text-primary)]">
+                <svg className="w-5 h-5 text-[var(--text-primary)] shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                 </svg>
                 <span>Verified publisher</span>

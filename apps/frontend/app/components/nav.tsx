@@ -6,24 +6,28 @@ import { usePathname } from 'next/navigation';
 import AnvaraLogo from '@/app/assets/images/anvara.png';
 import { useEffect, useState, useRef } from 'react';
 import { authClient } from '@/auth-client';
-
-type UserRole = 'sponsor' | 'publisher' | null;
+import { useUserRole } from '@/hooks/useUserRole';
+import { useClickOutside } from '@/hooks/useClickOutside';
 
 export function Nav() {
   const pathname = usePathname();
   const isHome = pathname === '/';
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
-  const [role, setRole] = useState<UserRole>(null);
+  const role = useUserRole(user?.id ?? undefined);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLDivElement>(null);
   const [pillStyle, setPillStyle] = useState({ left: 0, width: 0, opacity: 0 });
 
+  useClickOutside(dropdownRef, () => setIsDropdownOpen(false));
+
   useEffect(() => {
     function updatePillPosition() {
       if (!navRef.current) return;
-      const activeLink = navRef.current.querySelector('a[data-active="true"]') as HTMLElement;
+      const activeLink = navRef.current.querySelector(
+        'a[data-active="true"]'
+      ) as HTMLElement;
       if (activeLink) {
         setPillStyle({
           left: activeLink.offsetLeft,
@@ -44,31 +48,6 @@ export function Nav() {
     };
   }, [pathname, role]);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  // TODO: Convert to server component and fetch role server-side
-  // Fetch user role from backend when user is logged in
-  useEffect(() => {
-    if (!user?.id) return;
-
-    fetch(
-      `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4291'}/api/auth/role/${user.id}`,
-    )
-      .then((res) => res.json())
-      .then((data) => setRole(data.role))
-      .catch(() => setRole(null));
-
-    return () => setRole(null);
-  }, [user?.id]);
-
   // TODO: Add active link styling using usePathname() from next/navigation
   // The current page's link should be highlighted differently
 
@@ -81,7 +60,7 @@ export function Nav() {
 
         <div ref={navRef} className="absolute left-1/2 top-1/2 flex -translate-x-1/2 -translate-y-1/2 items-center gap-2 p-1">
           <div
-            className="absolute bottom-1 top-1 rounded-full bg-[#C4CAFE]/60 shadow-sm backdrop-blur-md transition-all duration-300 ease-out"
+            className="absolute bottom-1 top-1 rounded-full bg-nav-pill shadow-sm backdrop-blur-md transition-all duration-300 ease-out"
             style={{
               left: `${pillStyle.left}px`,
               width: `${pillStyle.width}px`,
@@ -94,10 +73,10 @@ export function Nav() {
             data-active={pathname.startsWith('/marketplace')}
             className={`relative z-10 rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-300 ${
               pathname.startsWith('/marketplace')
-                ? 'text-[#4057FE]'
+                ? 'text-primary'
                 : isHome
                 ? 'text-white hover:text-white/80'
-                : 'text-gray-500 hover:text-[#4057FE]'
+                : 'text-gray-500 hover:text-primary'
             }`}
           >
             Marketplace
@@ -109,10 +88,10 @@ export function Nav() {
               data-active={pathname.startsWith('/dashboard/sponsor')}
               className={`relative z-10 rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-300 ${
                 pathname.startsWith('/dashboard/sponsor')
-                  ? 'text-[#4057FE]'
+                  ? 'text-primary'
                   : isHome
                   ? 'text-white hover:text-white/80'
-                  : 'text-gray-500 hover:text-[#4057FE]'
+                  : 'text-gray-500 hover:text-primary'
               }`}
             >
               Campaigns
@@ -124,10 +103,10 @@ export function Nav() {
               data-active={pathname.startsWith('/dashboard/publisher')}
               className={`relative z-10 rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-300 ${
                 pathname.startsWith('/dashboard/publisher')
-                  ? 'text-[#4057FE]'
+                  ? 'text-primary'
                   : isHome
                   ? 'text-white hover:text-white/80'
-                  : 'text-gray-500 hover:text-[#4057FE]'
+                  : 'text-gray-500 hover:text-primary'
               }`}
             >
               My Ad Slots
@@ -142,7 +121,7 @@ export function Nav() {
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                className="flex h-10 w-10 items-center justify-center rounded-full bg-[#E5E8FF] text-sm font-bold text-[#4057FE] transition-transform hover:scale-105 hover:cursor-pointer"
+                className="flex h-10 w-10 items-center justify-center rounded-full bg-avatar-circle text-sm font-bold text-avatar-circle transition-transform hover:scale-105 hover:cursor-pointer"
               >
                 {user.name ? user.name.split(' ').map((n: string) => n[0]).join('').substring(0, 2).toUpperCase() : 'U'}
               </button>
@@ -151,7 +130,7 @@ export function Nav() {
                 <div className="absolute right-0 mt-2 w-72 rounded-3xl border border-gray-100 bg-white p-5 shadow-2xl">
                   {role && (
                     <div className="mb-4">
-                      <span className="rounded-full bg-[#E5E8FF] px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#4057FE]">
+                      <span className="rounded-full bg-avatar-circle px-3 py-1 text-xs font-bold uppercase tracking-wider text-avatar-circle">
                         {role}
                       </span>
                     </div>
@@ -184,7 +163,7 @@ export function Nav() {
           ) : (
             <Link
               href="/login"
-              className="rounded-xl bg-[#4057FE] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[--color-primary-hover]"
+              className="rounded-xl bg-btn-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-btn-primary-hover"
             >
               Login
             </Link>
