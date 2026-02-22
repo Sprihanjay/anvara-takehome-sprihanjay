@@ -3,7 +3,7 @@
 import { useState, useTransition } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Search, Target, Activity, CircleCheck } from 'lucide-react';
+import { Search, Target } from 'lucide-react';
 import { deleteCampaign } from '../actions';
 import { CampaignForm } from './campaign-form';
 import { CampaignCard } from './campaign-card';
@@ -77,8 +77,8 @@ export function CampaignList({ campaigns }: CampaignListProps) {
               <p className="mt-3 text-3xl font-bold text-black">{totalCampaigns}</p>
               <p className="mt-1 text-xs text-gray-500">All campaigns created</p>
             </div>
-            <div className="p-3 bg-blue-100 rounded-full">
-              <Target className="h-6 w-6 text-blue-600" />
+            <div className="flex items-center justify-center p-3 bg-blue-100 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-target h-6 w-6 text-blue-600" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
             </div>
           </div>
         </div>
@@ -89,8 +89,8 @@ export function CampaignList({ campaigns }: CampaignListProps) {
               <p className="mt-3 text-3xl font-bold text-black">{activeCampaigns}</p>
               <p className="mt-1 text-xs text-gray-500">{totalCampaigns > 0 ? Math.round((activeCampaigns / totalCampaigns) * 100) : 0}% of total campaigns</p>
             </div>
-            <div className="p-3 bg-emerald-100 rounded-full">
-              <Activity className="h-6 w-6 text-emerald-600" />
+            <div className="flex items-center justify-center p-3 bg-emerald-100 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-activity h-6 w-6 text-emerald-600" aria-hidden="true"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"></path></svg>
             </div>
           </div>
         </div>
@@ -101,8 +101,8 @@ export function CampaignList({ campaigns }: CampaignListProps) {
               <p className="mt-3 text-3xl font-bold text-black">{completedCampaigns}</p>
               <p className="mt-1 text-xs text-gray-500">{totalCampaigns > 0 ? Math.round((completedCampaigns / totalCampaigns) * 100) : 0}% are completed</p>
             </div>
-            <div className="p-3 bg-purple-100 rounded-full">
-              <CircleCheck className="h-6 w-6 text-purple-600" />
+            <div className="flex items-center justify-center p-3 bg-purple-100 rounded-full">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-circle-check h-6 w-6 text-purple-600" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="m9 12 2 2 4-4"></path></svg>
             </div>
           </div>
         </div>
