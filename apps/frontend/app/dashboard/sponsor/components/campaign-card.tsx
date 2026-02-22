@@ -59,7 +59,7 @@ export function CampaignCard({ campaign, onEdit, onDelete, isDeleting }: Campaig
         {new Date(campaign.endDate).toLocaleDateString()}
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 justify-end">
         <button
           onClick={onEdit}
           className="font-bold rounded-2xl bg-[#DBEAFF] px-3 py-1 text-xs text-[#165DFC] hover:opacity-90 hover:cursor-pointer"
