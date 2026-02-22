@@ -33,14 +33,15 @@
 }
 
 /* Dark mode support - TODO: Implement dark mode toggle */
-@media (prefers-color-scheme: dark) {
+/* Dark mode disabled */
+/* @media (prefers-color-scheme: dark) {
   :root {
     --color-background: #0f172a;
     --color-foreground: #f8fafc;
     --color-muted: #94a3b8;
     --color-border: #334155;
   }
-}
+} */
 
 /* Base styles */
 body {
