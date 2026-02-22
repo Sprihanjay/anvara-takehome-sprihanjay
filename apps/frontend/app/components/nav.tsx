@@ -177,7 +177,7 @@ export function Nav() {
           ) : (
             <Link
               href="/login"
-              className="rounded-xl bg-[--color-primary] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[--color-primary-hover]"
+              className="rounded-xl bg-[#4057FE] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-[--color-primary-hover]"
             >
               Login
             </Link>
