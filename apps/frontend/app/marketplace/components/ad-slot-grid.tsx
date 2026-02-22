@@ -16,6 +16,7 @@ const typeColors: Record<string, string> = {
 
 type TypeFilter = 'all' | 'DISPLAY' | 'VIDEO' | 'NEWSLETTER' | 'PODCAST';
 type StatusFilter = 'all' | 'available' | 'booked';
+type VerifiedFilter = 'all' | 'verified';
 type SortOption = 'default' | 'price-low' | 'price-high' | 'views-high' | 'views-low';
 
 export function AdSlotGrid() {
@@ -25,6 +26,7 @@ export function AdSlotGrid() {
   const [searchQuery, setSearchQuery] = useState('');
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
   const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [verifiedFilter, setVerifiedFilter] = useState<VerifiedFilter>('all');
   const [sortOption, setSortOption] = useState<SortOption>('default');
 
   useEffect(() => {
@@ -72,6 +74,11 @@ export function AdSlotGrid() {
     filteredSlots = filteredSlots.filter(slot => !slot.isAvailable);
   }
 
+  // Verified filter
+  if (verifiedFilter === 'verified') {
+    filteredSlots = filteredSlots.filter(slot => slot.publisher?.isVerified === true);
+  }
+
   // Search filter
   if (searchQuery) {
     filteredSlots = filteredSlots.filter(slot =>
@@ -102,6 +109,7 @@ export function AdSlotGrid() {
   const activeFilterCount = [
     typeFilter !== 'all',
     statusFilter !== 'all',
+    verifiedFilter !== 'all',
     sortOption !== 'default',
   ].filter(Boolean).length;
 
@@ -156,6 +164,16 @@ export function AdSlotGrid() {
            />
 
            <CustomSelect
+             value={verifiedFilter}
+             onChange={(val) => setVerifiedFilter(val as VerifiedFilter)}
+             options={[
+               { value: 'all', label: 'All Publishers' },
+               { value: 'verified', label: 'Verified only' },
+             ]}
+             placeholder="Verified"
+           />
+
+           <CustomSelect
              value={sortOption}
              onChange={(val) => setSortOption(val as SortOption)}
              options={[
@@ -173,6 +191,7 @@ export function AdSlotGrid() {
               onClick={() => {
                 setTypeFilter('all');
                 setStatusFilter('all');
+                setVerifiedFilter('all');
                 setSortOption('default');
               }}
               className="flex items-center gap-2 rounded-2xl bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
