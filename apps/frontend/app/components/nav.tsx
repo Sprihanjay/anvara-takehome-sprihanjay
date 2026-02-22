@@ -74,7 +74,7 @@ export function Nav() {
   return (
     <header className="sticky top-4 z-50 mx-auto max-w-6xl px-4 mb-8">
       <nav className="relative flex items-center justify-between rounded-2xl border border-white/50 bg-white/40 p-4 shadow-lg backdrop-blur-lg backdrop-saturate-150">
-        <Link href="/" className="flex items-center cursor-default">
+        <Link href="/" className="flex items-center cursor-pointer">
           <Image src={AnvaraLogo} alt="Anvara" height={20} className="h-5 w-auto" priority unoptimized />
         </Link>
 
