@@ -71,7 +71,30 @@ export function AdSlotGrid() {
           </div>
 
           {slot.publisher && (
-            <p className="mb-2 text-xs text-[--color-muted]">by {slot.publisher.name}</p>
+            <div className="mb-2">
+              <p className="text-xs text-[--color-muted]">by {slot.publisher.name}</p>
+              <div className="flex gap-3 mt-1 text-xs text-gray-500">
+                {slot.publisher.monthlyViews && (
+                  <span className="flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#767e8d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    {slot.publisher.monthlyViews.toLocaleString()} views/mo
+                  </span>
+                )}
+                {slot.publisher.subscriberCount && (
+                  <span className="flex items-center gap-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#767e8d" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="9" cy="7" r="4"></circle>
+                      <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                      <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                    </svg>
+                    {slot.publisher.subscriberCount.toLocaleString()} subs
+                  </span>
+                )}
+              </div>
+            </div>
           )}
 
           {slot.description && (

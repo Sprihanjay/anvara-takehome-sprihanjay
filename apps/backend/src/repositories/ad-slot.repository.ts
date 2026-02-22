@@ -44,7 +44,7 @@ export class AdSlotRepository {
         ...(available === 'true' && { isAvailable: true }),
       },
       include: {
-        publisher: { select: { id: true, name: true, category: true, monthlyViews: true, isVerified: true } },
+        publisher: { select: { id: true, name: true, category: true, monthlyViews: true, subscriberCount: true, isVerified: true } },
         _count: { select: { placements: true } },
       },
       orderBy: { basePrice: 'desc' },
