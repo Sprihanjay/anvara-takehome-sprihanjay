@@ -96,6 +96,7 @@ export function AdSlotDetail({ id }: Props) {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
           body: JSON.stringify({
             sponsorId: roleInfo.sponsorId,
             message: message || undefined,
@@ -126,6 +127,7 @@ export function AdSlotDetail({ id }: Props) {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
         }
       );
 
@@ -157,60 +159,57 @@ export function AdSlotDetail({ id }: Props) {
 
   return (
     <div className="space-y-4">
-      <div className="items-center grid gap-1">
-        <div className="flex items-center justify-between w-full">
-          <h1 className="text-2xl font-bold">{adSlot.name}</h1>
-          <span className={`rounded px-3 py-1 text-sm ${typeColors[adSlot.type] || 'bg-gray-100'}`}>
-            {adSlot.type}
-          </span>
-        </div>
-        {adSlot.publisher && (
-          <div className="text-sm text-gray-600">
-            by {adSlot.publisher.name}
-            {adSlot.publisher.website && (
-              <>
-                {' '}
-                ·{' '}
-                <a
-                  href={adSlot.publisher.website}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  {adSlot.publisher.website}
-                </a>
-              </>
+      <div className="bg-white text-black rounded-4xl border shadow-xl p-6 gap-4 border-gray-50">
+        <div className="flex items-start justify-between mb-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold">{adSlot.name}</h1>
+              <span className={`rounded px-2.5 py-0.5 text-xs font-bold ${typeColors[adSlot.type] || 'bg-gray-100'}`}>
+                {adSlot.type}
+              </span>
+            </div>
+            {adSlot.publisher && (
+              <div className="text-sm text-gray-600">
+                by {adSlot.publisher.name}
+                {adSlot.publisher.website && (
+                  <>
+                    {' '}
+                    ·{' '}
+                    <a
+                      href={adSlot.publisher.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline"
+                    >
+                      {adSlot.publisher.website}
+                    </a>
+                  </>
+                )}
+              </div>
             )}
           </div>
-        )}
-      </div>
-
-      <div className="bg-white text-black rounded-4xl border shadow-xl p-6 gap-4 border-gray-50">
-        {adSlot.description && <p className="mb-6 text-gray-600">{adSlot.description}</p>}
-
-        <div className="flex items-center justify-between pt-2">
-          <div>
-            <span
-              className={`text-sm font-medium ${adSlot.isAvailable ? 'text-green-600' : 'text-gray-500'}`}
-            >
-              {adSlot.isAvailable ? '● Available' : '○ Currently Booked'}
-            </span>
+          <div className="text-right shrink-0">
+            <div className="flex items-center justify-end gap-4">
+              <span className={`text-sm font-medium ${adSlot.isAvailable ? 'text-green-600' : 'text-gray-500'}`}>
+                {adSlot.isAvailable ? '● Available' : '○ Currently Booked'}
+              </span>
+              <p className="text-2xl font-bold text-black">
+                ${Number(adSlot.basePrice).toLocaleString()}
+              </p>
+            </div>
+            <p className="text-sm text-gray-500">per month</p>
             {!adSlot.isAvailable && !bookingSuccess && (
               <button
                 onClick={handleUnbook}
-                className="ml-3 text-sm text-blue-600 underline hover:opacity-80"
+                className="text-sm text-blue-600 underline hover:opacity-80"
               >
                 Reset listing
               </button>
             )}
           </div>
-          <div className="text-right">
-            <p className="text-2xl font-bold text-black">
-              ${Number(adSlot.basePrice).toLocaleString()}
-            </p>
-            <p className="text-sm text-gray-500">per month</p>
-          </div>
         </div>
+
+        {adSlot.description && <p className="mb-4 text-gray-600">{adSlot.description}</p>}
 
         {adSlot.isAvailable && !bookingSuccess && (
           <div className="mt-6 border-t border-gray-100 pt-6">
@@ -224,7 +223,7 @@ export function AdSlotDetail({ id }: Props) {
                   <label className="mb-1 block text-sm font-medium text-gray-600">
                     Your Company
                   </label>
-                  <p className="text-black">{roleInfo.name || user?.name}</p>
+                  <p className="rounded-lg bg-[#F5F5F5] px-3 py-2 text-black">{roleInfo.name || user?.name}</p>
                 </div>
                 <div>
                   <label
@@ -238,7 +237,7 @@ export function AdSlotDetail({ id }: Props) {
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}
                     placeholder="Tell the publisher about your campaign goals..."
-                    className="w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-black placeholder:text-gray-400 focus:outline-none focus:border-2 focus:border-black"
+                    className="w-full rounded-lg border-0 bg-[#F5F5F5] px-3 py-2 text-black placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-black"
                     rows={3}
                   />
                 </div>

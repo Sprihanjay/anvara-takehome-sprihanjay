@@ -110,7 +110,7 @@ export function Nav() {
                   : 'text-gray-500 hover:text-[#4057FE]'
               }`}
             >
-              My Campaigns
+              Campaigns
             </Link>
           )}
           {user && role === 'publisher' && (
