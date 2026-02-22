@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { createAdSlot, updateAdSlot, type ActionResult } from '../actions';
 import { SubmitButton } from '@/app/components/submit-button';
 import type { AdSlot } from '@/lib/types';
@@ -10,22 +10,27 @@ const AD_SLOT_TYPES = ['DISPLAY', 'VIDEO', 'NATIVE', 'NEWSLETTER', 'PODCAST'] as
 interface AdSlotFormProps {
   adSlot?: AdSlot;
   onCancel?: () => void;
+  onSave?: (updated: AdSlot) => void;
 }
 
 const initialState: ActionResult = {};
 
-export function AdSlotForm({ adSlot, onCancel }: AdSlotFormProps) {
+export function AdSlotForm({ adSlot, onCancel, onSave }: AdSlotFormProps) {
   const isEdit = !!adSlot;
+  const [isAvailable, setIsAvailable] = useState(adSlot?.isAvailable ?? true);
 
   const boundAction = isEdit ? updateAdSlot.bind(null, adSlot.id) : createAdSlot;
 
   const [state, formAction] = useActionState(boundAction, initialState);
 
   useEffect(() => {
-    if (state.success && onCancel) {
-      onCancel();
+    if (state.success) {
+      if (onSave && state.updatedSlot) {
+        onSave(state.updatedSlot as AdSlot);
+      }
+      if (onCancel) onCancel();
     }
-  }, [state.success, onCancel]);
+  }, [state.success, state.updatedSlot, onSave, onCancel]);
 
   return (
     <form action={formAction} className="space-y-4">
@@ -136,11 +141,12 @@ export function AdSlotForm({ adSlot, onCancel }: AdSlotFormProps) {
 
       {isEdit && (
         <div className="flex items-center gap-2">
+          <input type="hidden" name="isAvailable" value={isAvailable ? 'on' : 'off'} />
           <input
             type="checkbox"
             id="adslot-isAvailable"
-            name="isAvailable"
-            defaultChecked={adSlot.isAvailable}
+            checked={isAvailable}
+            onChange={(e) => setIsAvailable(e.target.checked)}
           />
           <label htmlFor="adslot-isAvailable" className="text-sm font-medium">
             Available for booking

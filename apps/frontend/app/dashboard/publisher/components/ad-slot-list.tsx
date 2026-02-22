@@ -173,6 +173,12 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
                   <AdSlotForm
                     adSlot={slot}
                     onCancel={() => setEditingId(null)}
+                    onSave={(updated) => {
+                      setAdSlots((prev) =>
+                        prev.map((s) => (s.id === updated.id ? updated : s))
+                      );
+                      setEditingId(null);
+                    }}
                   />
                 </div>
               ) : (

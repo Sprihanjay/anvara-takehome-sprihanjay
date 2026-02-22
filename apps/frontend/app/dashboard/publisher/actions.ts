@@ -12,6 +12,7 @@ export interface ActionResult {
   success?: boolean;
   error?: string;
   fieldErrors?: Record<string, string>;
+  updatedSlot?: Record<string, unknown>;
 }
 
 async function getAuthCookie(): Promise<string> {
@@ -78,7 +79,7 @@ export async function updateAdSlot(
   const basePriceStr = formData.get('basePrice') as string;
   const widthStr = formData.get('width') as string;
   const heightStr = formData.get('height') as string;
-  const isAvailable = formData.get('isAvailable') === 'on';
+  const isAvailable = formData.get('isAvailable') !== 'off';
 
   const fieldErrors: Record<string, string> = {};
 
@@ -117,8 +118,9 @@ export async function updateAdSlot(
     return { error: data?.error || data?.message || 'Failed to update ad slot' };
   }
 
+  const updatedSlot = await res.json().catch(() => null);
   revalidatePath('/dashboard/publisher');
-  return { success: true };
+  return { success: true, updatedSlot };
 }
 
 export async function deleteAdSlot(id: string): Promise<ActionResult> {
