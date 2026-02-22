@@ -19,24 +19,41 @@ interface AdSlotCardProps {
 
 export function AdSlotCard({ adSlot, onEdit, onDelete, isDeleting }: AdSlotCardProps) {
   return (
-    <div className="bg-white text-black rounded-4xl border shadow-xl p-6 gap-4 border-gray-50">
-      <div className="mb-2 flex items-start justify-between">
-        <h3 className="font-semibold">{adSlot.name}</h3>
+    <div className="bg-white text-black rounded-4xl border shadow-xl p-6 flex flex-col gap-4 border-gray-50">
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <h3 className="font-semibold text-lg leading-tight">{adSlot.name}</h3>
         <span className={`font-bold rounded-2xl px-3 py-0.5 text-xs ${typeColors[adSlot.type] || 'bg-gray-100'}`}>
           {adSlot.type}
         </span>
       </div>
 
       {adSlot.description && (
-        <p className="mb-3 text-sm text-[--color-muted] line-clamp-2">{adSlot.description}</p>
+        <p className="text-sm text-[--color-muted] line-clamp-2 -mt-2">{adSlot.description}</p>
       )}
 
-      <div className="mb-3 flex items-center justify-between">
+      {/* Price */}
+      <div className="rounded-2xl bg-[#F7F8F9] px-4 py-3">
+        <div className="flex items-center justify-between">
+          <span className="flex items-center gap-1.5 text-sm font-semibold text-[--color-muted]">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </span>
+            Base Price
+          </span>
+          <span className="text-sm font-bold text-black">
+            ${Number(adSlot.basePrice).toLocaleString()}<span className="font-normal text-[--color-muted]">/mo</span>
+          </span>
+        </div>
+      </div>
+
+      {/* Availability + Actions */}
+      <div className="flex items-center justify-between gap-2">
         <span
           className={
             adSlot.isAvailable
-              ? 'inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-sm font-medium border border-green-200'
-              : 'inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium border border-gray-200'
+              ? 'inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 rounded-xl text-sm font-medium'
+              : 'inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-600 rounded-xl text-sm font-medium'
           }
         >
           {adSlot.isAvailable ? (
@@ -52,25 +69,21 @@ export function AdSlotCard({ adSlot, onEdit, onDelete, isDeleting }: AdSlotCardP
           )}
           {adSlot.isAvailable ? 'Available' : 'Booked'}
         </span>
-        <span className="font-semibold text-[#4057FE]">
-          ${Number(adSlot.basePrice).toLocaleString()}/mo
-        </span>
-      </div>
-
-      <div className="flex gap-2 justify-end">
-        <button
-          onClick={onEdit}
-          className="font-bold rounded-2xl bg-[#DBEAFF] px-3 py-1 text-xs text-[#165DFC] hover:opacity-90 hover:cursor-pointer"
-        >
-          Edit
-        </button>
-        <button
-          onClick={onDelete}
-          disabled={isDeleting}
-          className="rounded-2xl font-bold bg-[#FFE2E2] px-3 py-1 text-xs text-[#E7000B] hover:opacity-90 disabled:opacity-50 hover:cursor-pointer"
-        >
-          {isDeleting ? 'Deleting...' : 'Delete'}
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={onEdit}
+            className="font-bold rounded-2xl bg-[#DBEAFF] px-5 py-2 text-sm text-[#165DFC] hover:opacity-90 hover:cursor-pointer"
+          >
+            Edit
+          </button>
+          <button
+            onClick={onDelete}
+            disabled={isDeleting}
+            className="rounded-2xl font-bold bg-[#FFE2E2] px-5 py-2 text-sm text-[#E7000B] hover:opacity-90 disabled:opacity-50 hover:cursor-pointer"
+          >
+            {isDeleting ? 'Deleting...' : 'Delete'}
+          </button>
+        </div>
       </div>
     </div>
   );
