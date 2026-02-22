@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { Search } from 'lucide-react';
 import { getAdSlots } from '@/lib/api';
 import type { AdSlot } from '@/lib/types';
+import { CustomSelect } from './custom-select';
 
 const typeColors: Record<string, string> = {
   DISPLAY: 'bg-blue-100 text-blue-700',
@@ -12,10 +14,18 @@ const typeColors: Record<string, string> = {
   PODCAST: 'bg-orange-100 text-orange-700',
 };
 
+type TypeFilter = 'all' | 'DISPLAY' | 'VIDEO' | 'NEWSLETTER' | 'PODCAST';
+type StatusFilter = 'all' | 'available' | 'booked';
+type SortOption = 'default' | 'price-low' | 'price-high' | 'views-high' | 'views-low';
+
 export function AdSlotGrid() {
   const [adSlots, setAdSlots] = useState<AdSlot[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>('all');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>('all');
+  const [sortOption, setSortOption] = useState<SortOption>('default');
 
   useEffect(() => {
     getAdSlots()
@@ -32,6 +42,54 @@ export function AdSlotGrid() {
     return <div className="rounded border border-red-200 bg-red-50 p-4 text-red-600">{error}</div>;
   }
 
+  // Apply filters and search
+  let filteredSlots = adSlots;
+
+  // Type filter
+  if (typeFilter !== 'all') {
+    filteredSlots = filteredSlots.filter(slot => slot.type === typeFilter);
+  }
+
+  // Status filter
+  if (statusFilter === 'available') {
+    filteredSlots = filteredSlots.filter(slot => slot.isAvailable);
+  } else if (statusFilter === 'booked') {
+    filteredSlots = filteredSlots.filter(slot => !slot.isAvailable);
+  }
+
+  // Search filter
+  if (searchQuery) {
+    filteredSlots = filteredSlots.filter(slot =>
+      slot.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      slot.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      slot.publisher?.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }
+
+  // Sort
+  filteredSlots = [...filteredSlots].sort((a, b) => {
+    switch (sortOption) {
+      case 'default':
+        return 0; // Keep original order
+      case 'price-low':
+        return Number(a.basePrice) - Number(b.basePrice);
+      case 'price-high':
+        return Number(b.basePrice) - Number(a.basePrice);
+      case 'views-high':
+        return (b.publisher?.monthlyViews || 0) - (a.publisher?.monthlyViews || 0);
+      case 'views-low':
+        return (a.publisher?.monthlyViews || 0) - (b.publisher?.monthlyViews || 0);
+      default:
+        return 0;
+    }
+  });
+
+  const activeFilterCount = [
+    typeFilter !== 'all',
+    statusFilter !== 'all',
+    sortOption !== 'default',
+  ].filter(Boolean).length;
+
   if (adSlots.length === 0) {
     return (
       <div className="rounded-lg border border-dashed border-[--color-border] p-12 text-center text-[--color-muted]">
@@ -41,8 +99,94 @@ export function AdSlotGrid() {
   }
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {adSlots.map((slot) => (
+    <div className="space-y-6">
+      {/* Search and Filters Card */}
+      <div className="bg-white rounded-3xl border border-gray-100 p-6 shadow-sm space-y-4">
+        {/* Search Bar */}
+        <div className="relative">
+          <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search placements..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full rounded-2xl border border-gray-200 bg-[#F7F8F9] py-3 pl-12 pr-4 text-sm text-black placeholder:text-gray-400 focus:border-black focus:outline-none"
+          />
+        </div>
+
+        {/* Filters */}
+        <div className="flex flex-wrap items-center gap-3">
+          <CustomSelect
+             value={typeFilter}
+             onChange={(val) => setTypeFilter(val as TypeFilter)}
+             options={[
+               { value: 'all', label: 'All Types' },
+               { value: 'DISPLAY', label: 'Display' },
+               { value: 'VIDEO', label: 'Video' },
+               { value: 'NEWSLETTER', label: 'Newsletter' },
+               { value: 'PODCAST', label: 'Podcast' },
+             ]}
+             placeholder="Select Type"
+           />
+
+           <CustomSelect
+             value={statusFilter}
+             onChange={(val) => setStatusFilter(val as StatusFilter)}
+             options={[
+               { value: 'all', label: 'All Status' },
+               { value: 'available', label: 'Available' },
+               { value: 'booked', label: 'Booked' },
+             ]}
+             placeholder="Select Status"
+           />
+
+           <CustomSelect
+             value={sortOption}
+             onChange={(val) => setSortOption(val as SortOption)}
+             options={[
+               { value: 'default', label: 'Default Order' },
+               { value: 'price-low', label: 'Price: Low to High' },
+               { value: 'price-high', label: 'Price: High to Low' },
+               { value: 'views-high', label: 'Views: High to Low' },
+               { value: 'views-low', label: 'Views: Low to High' },
+             ]}
+             placeholder="Sort By"
+           />
+
+          {activeFilterCount > 0 && (
+            <button
+              onClick={() => {
+                setTypeFilter('all');
+                setStatusFilter('all');
+                setSortOption('default');
+              }}
+              className="flex items-center gap-2 rounded-2xl bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+              Clear Filters
+              <span className="ml-1 rounded-full bg-[#DADEFD] px-2 py-0.5 text-xs text-[#4057FE] font-semibold">{activeFilterCount}</span>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Results count */}
+      <div className="text-sm text-gray-600">
+        Showing {filteredSlots.length} of {adSlots.length} placements
+      </div>
+
+      {/* Grid */}
+      {filteredSlots.length === 0 ? (
+        <div className="rounded-lg border border-dashed border-gray-300 p-12 text-center">
+          <p className="text-lg font-semibold text-gray-900">No placements found</p>
+          <p className="mt-2 text-sm text-gray-600">Try adjusting your search or filters</p>
+        </div>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredSlots.map((slot) => (
         <Link
           key={slot.id}
           href={`/marketplace/${slot.id}`}
@@ -146,6 +290,8 @@ export function AdSlotGrid() {
           </div>
         </Link>
       ))}
+        </div>
+      )}
     </div>
   );
 }
