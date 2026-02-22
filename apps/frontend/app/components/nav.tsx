@@ -155,7 +155,7 @@ export function Nav() {
           <button
             type="button"
             onClick={() => setIsSectionDropdownOpen(!isSectionDropdownOpen)}
-            className="flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-primary bg-white/80 border border-gray-200/80 min-w-[120px] justify-center"
+            className="flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-primary bg-white/80 border border-gray-200/80 min-w-30 justify-center"
           >
             <span>{sectionLabel}</span>
             <ChevronDown className={`h-4 w-4 transition-transform ${isSectionDropdownOpen ? 'rotate-180' : ''}`} />

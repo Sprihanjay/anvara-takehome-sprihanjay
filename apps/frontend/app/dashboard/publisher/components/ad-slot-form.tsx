@@ -45,7 +45,7 @@ export function AdSlotForm({ adSlot, onCancel, onSave }: AdSlotFormProps) {
           required
           minLength={3}
           placeholder="Enter your ad slot name"
-          className="py-3 mt-2 block w-full rounded-xl bg-[var(--color-background)] px-4 text-sm border border-transparent focus:outline-none focus:border-2 focus:invalid:border-red-500 focus:valid:border-black"
+          className="py-3 mt-2 block w-full rounded-xl bg-[--color-background] px-4 text-sm border border-transparent focus:outline-none focus:border-2 focus:invalid:border-red-500 focus:valid:border-black"
         />
         {state.fieldErrors?.name && (
           <p className="mt-1 text-xs text-red-600">{state.fieldErrors.name}</p>
@@ -61,7 +61,7 @@ export function AdSlotForm({ adSlot, onCancel, onSave }: AdSlotFormProps) {
           name="description"
           defaultValue={adSlot?.description ?? ''}
           rows={2}
-          className="py-3 mt-2 block w-full rounded-xl bg-[var(--color-background)] px-4 text-sm border border-transparent focus:outline-none focus:border-2 focus:invalid:border-red-500 focus:valid:border-black"
+          className="py-3 mt-2 block w-full rounded-xl bg-[--color-background] px-4 text-sm border border-transparent focus:outline-none focus:border-2 focus:invalid:border-red-500 focus:valid:border-black"
         />
       </div>
 
@@ -75,7 +75,7 @@ export function AdSlotForm({ adSlot, onCancel, onSave }: AdSlotFormProps) {
           name="position"
           defaultValue={adSlot?.position ?? ''}
           placeholder="e.g. Header, Sidebar, Footer, In-article"
-          className="py-3 mt-2 block w-full rounded-xl bg-[var(--color-background)] px-4 text-sm border border-transparent focus:outline-none focus:border-2 focus:valid:border-black"
+          className="py-3 mt-2 block w-full rounded-xl bg-[--color-background] px-4 text-sm border border-transparent focus:outline-none focus:border-2 focus:valid:border-black"
         />
       </div>
 
@@ -88,7 +88,7 @@ export function AdSlotForm({ adSlot, onCancel, onSave }: AdSlotFormProps) {
             id="adslot-type"
             name="type"
             required
-            className="mt-2 block w-full rounded-xl border border-transparent bg-[var(--color-background)] px-4 py-3 text-sm focus:border-2 focus:border-black focus:outline-none"
+            className="mt-2 block w-full rounded-xl border border-transparent bg-[--color-background] px-4 py-3 text-sm focus:border-2 focus:border-black focus:outline-none"
           >
             <option value="">Select type...</option>
             {AD_SLOT_TYPES.map((t) => (
@@ -116,7 +116,7 @@ export function AdSlotForm({ adSlot, onCancel, onSave }: AdSlotFormProps) {
           min="0.01"
           step="0.01"
           placeholder="0.00"
-          className="mt-2 block w-full rounded-xl border border-transparent bg-[var(--color-background)] px-4 py-3 text-sm focus:outline-none focus:border-2 focus:invalid:border-red-500 focus:valid:border-black"
+          className="mt-2 block w-full rounded-xl border border-transparent bg-[--color-background] px-4 py-3 text-sm focus:outline-none focus:border-2 focus:invalid:border-red-500 focus:valid:border-black"
         />
         {state.fieldErrors?.basePrice && (
           <p className="mt-2 text-xs text-red-600">{state.fieldErrors.basePrice}</p>
@@ -149,7 +149,7 @@ export function AdSlotForm({ adSlot, onCancel, onSave }: AdSlotFormProps) {
           <button
             type="button"
             onClick={onCancel}
-            className="text-sm font-semibold text-black hover:text-[var(--text-primary)] transition-colors hover:cursor-pointer"
+            className="text-sm font-semibold text-black hover:text-[--text-primary] transition-colors hover:cursor-pointer"
           >
             Cancel
           </button>

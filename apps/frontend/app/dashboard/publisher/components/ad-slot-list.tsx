@@ -156,7 +156,7 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
             placeholder="Search slots..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-2xl border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm outline-none focus:border-[var(--bg-primary)] focus:ring-2 focus:ring-[var(--bg-primary)]/20 sm:w-64"
+            className="w-full rounded-2xl border border-gray-200 bg-white py-2 pl-10 pr-4 text-sm outline-none focus:border-[--bg-primary] focus:ring-2 focus:ring-[--bg-primary]/20 sm:w-64"
           />
         </div>
       </div>

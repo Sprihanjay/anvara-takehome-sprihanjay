@@ -33,7 +33,7 @@ export function AdSlotCard({ adSlot, onEdit, onDelete, isDeleting }: AdSlotCardP
       )}
 
       {/* Price */}
-      <div className="rounded-2xl bg-[var(--color-background)] px-4 py-3">
+      <div className="rounded-2xl bg-[--color-background] px-4 py-3">
         <div className="flex items-center justify-between">
           <span className="flex items-center gap-1.5 text-sm font-semibold text-[--color-muted]">
             <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100">

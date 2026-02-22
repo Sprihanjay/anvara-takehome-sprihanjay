@@ -47,7 +47,7 @@ export function NewsletterSignup() {
   };
 
   return (
-    <div className="w-full bg-[var(--bg-newsletter)] border-t border-primary-subtle text-slate-900 py-8 mt-20">
+    <div className="w-full bg-[--bg-newsletter] border-t border-primary-subtle text-slate-900 py-8 mt-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
@@ -74,14 +74,14 @@ export function NewsletterSignup() {
                     placeholder="Enter your email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[var(--bg-primary)] focus:border-transparent transition-all"
+                    className="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[--bg-primary] focus:border-transparent transition-all"
                     required
                   />
                 </div>
                 <button
                   type="submit"
                   disabled={status === 'loading'}
-                  className="px-6 py-3 bg-btn-primary hover:bg-btn-primary-hover text-white font-bold rounded-xl transition-all shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center min-w-[120px]"
+                  className="px-6 py-3 bg-btn-primary hover:bg-btn-primary-hover text-white font-bold rounded-xl transition-all shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center min-w-30"
                 >
                   {status === 'loading' ? (
                     <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
