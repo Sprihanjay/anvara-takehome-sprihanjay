@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { createCampaign, updateCampaign, type ActionResult } from '../actions';
 import { SubmitButton } from '@/app/components/submit-button';
 import type { Campaign } from '@/lib/types';
@@ -30,6 +30,13 @@ export function CampaignForm({ campaign, onCancel }: CampaignFormProps) {
   const boundAction = isEdit ? updateCampaign.bind(null, campaign.id) : createCampaign;
 
   const [state, formAction] = useActionState(boundAction, initialState);
+
+  // Close the form after successful save
+  useEffect(() => {
+    if (state.success && onCancel) {
+      onCancel();
+    }
+  }, [state.success, onCancel]);
 
   return (
     <form action={formAction} className="space-y-4">
