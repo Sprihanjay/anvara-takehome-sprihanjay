@@ -7,6 +7,7 @@ import { LayoutGrid, CheckCircle, DollarSign, Search, Plus } from 'lucide-react'
 import { deleteAdSlot } from '@/lib/api';
 import type { AdSlot } from '@/lib/types';
 import { AdSlotCard } from './ad-slot-card';
+import { AdSlotForm } from './ad-slot-form';
 import PlusImg from '../../../assets/images/plusimg.svg';
 
 interface AdSlotListProps {
@@ -19,6 +20,7 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
   const [adSlots, setAdSlots] = useState(initialAdSlots);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'ALL' | 'AVAILABLE' | 'BOOKED'>('ALL');
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   const handleDelete = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this ad slot?')) return;
@@ -164,13 +166,25 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filteredSlots.map((slot) => (
-            <AdSlotCard
-              key={slot.id}
-              adSlot={slot}
-              onEdit={() => router.push(`/dashboard/publisher/${slot.id}`)}
-              onDelete={() => handleDelete(slot.id)}
-              isDeleting={isPending}
-            />
+            <div key={slot.id}>
+              {editingId === slot.id ? (
+                <div className="bg-white text-black rounded-4xl border shadow-xl p-6 gap-4 border-gray-50">
+                  <h3 className="mb-4 text-lg font-semibold">Edit Ad Slot</h3>
+                  <AdSlotForm
+                    adSlot={slot}
+                    onCancel={() => setEditingId(null)}
+                  />
+                </div>
+              ) : (
+                <AdSlotCard
+                  key={slot.id}
+                  adSlot={slot}
+                  onEdit={() => setEditingId(slot.id)}
+                  onDelete={() => handleDelete(slot.id)}
+                  isDeleting={isPending}
+                />
+              )}
+            </div>
           ))}
         </div>
       )}

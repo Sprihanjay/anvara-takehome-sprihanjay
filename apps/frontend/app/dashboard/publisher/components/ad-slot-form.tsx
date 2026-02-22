@@ -1,6 +1,6 @@
 'use client';
 
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { createAdSlot, updateAdSlot, type ActionResult } from '../actions';
 import { SubmitButton } from '@/app/components/submit-button';
 import type { AdSlot } from '@/lib/types';
@@ -9,16 +9,23 @@ const AD_SLOT_TYPES = ['DISPLAY', 'VIDEO', 'NATIVE', 'NEWSLETTER', 'PODCAST'] as
 
 interface AdSlotFormProps {
   adSlot?: AdSlot;
+  onCancel?: () => void;
 }
 
 const initialState: ActionResult = {};
 
-export function AdSlotForm({ adSlot }: AdSlotFormProps) {
+export function AdSlotForm({ adSlot, onCancel }: AdSlotFormProps) {
   const isEdit = !!adSlot;
 
   const boundAction = isEdit ? updateAdSlot.bind(null, adSlot.id) : createAdSlot;
 
   const [state, formAction] = useActionState(boundAction, initialState);
+
+  useEffect(() => {
+    if (state.success && onCancel) {
+      onCancel();
+    }
+  }, [state.success, onCancel]);
 
   return (
     <form action={formAction} className="space-y-4">
@@ -147,7 +154,16 @@ export function AdSlotForm({ adSlot }: AdSlotFormProps) {
         </div>
       )}
 
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-end gap-4">
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="text-sm font-semibold text-black hover:text-[#4057FE] transition-colors hover:cursor-pointer"
+          >
+            Cancel
+          </button>
+        )}
         <SubmitButton
           label={isEdit ? 'Save Changes' : 'Create Ad Slot'}
           pendingLabel={isEdit ? 'Saving...' : 'Creating...'}
