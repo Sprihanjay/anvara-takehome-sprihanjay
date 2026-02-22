@@ -49,7 +49,18 @@ export function AdSlotGrid() {
           className="bg-white text-black rounded-4xl border shadow-xl p-6 gap-4 border-gray-50"
         >
           <div className="mb-0.5 flex items-start justify-between">
-            <h3 className="font-semibold">{slot.name}</h3>
+            <div className="flex items-center">
+              <h3 className="font-semibold">{slot.name}</h3>
+              <svg
+                className="ml-2"
+                xmlns="http://www.w3.org/2000/svg"
+                width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#4057fe" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
             <span
               className={`rounded-xl font-semibold px-3 py-0.5 text-xs ${typeColors[slot.type] || 'bg-gray-100'}`}
             >
