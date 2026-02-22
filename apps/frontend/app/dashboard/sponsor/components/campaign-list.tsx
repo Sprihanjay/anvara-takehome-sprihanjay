@@ -7,6 +7,7 @@ import { Search } from 'lucide-react';
 import { deleteCampaign } from '../actions';
 import { CampaignForm } from './campaign-form';
 import { CampaignCard } from './campaign-card';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import type { Campaign } from '@/lib/types';
 import PlusImg from "../../../assets/images/plusimg.svg";
 
@@ -21,10 +22,16 @@ export function CampaignList({ campaigns }: CampaignListProps) {
   const [isPending, startTransition] = useTransition();
   const [activeFilter, setActiveFilter] = useState<FilterTab>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
-  function handleDelete(id: string) {
-    if (!confirm('Are you sure you want to delete this campaign?')) return;
+  function handleDeleteClick(id: string) {
+    setDeleteConfirmId(id);
+  }
 
+  function handleDeleteConfirm() {
+    if (!deleteConfirmId) return;
+    const id = deleteConfirmId;
+    setDeleteConfirmId(null);
     startTransition(async () => {
       const result = await deleteCampaign(id);
       if (result.error) {
@@ -53,6 +60,16 @@ export function CampaignList({ campaigns }: CampaignListProps) {
 
   return (
     <div>
+      <ConfirmDialog
+        open={deleteConfirmId !== null}
+        onClose={() => setDeleteConfirmId(null)}
+        onConfirm={handleDeleteConfirm}
+        title="Delete campaign"
+        message="Are you sure you want to delete this campaign? This action cannot be undone."
+        confirmLabel="Delete"
+        variant="danger"
+        isLoading={isPending}
+      />
       {/* Header with title and create button */}
       <div className="mb-8 flex items-center justify-between">
         <div>
@@ -165,7 +182,7 @@ export function CampaignList({ campaigns }: CampaignListProps) {
                 <CampaignCard
                   campaign={campaign}
                   onEdit={() => setEditingId(campaign.id)}
-                  onDelete={() => handleDelete(campaign.id)}
+                  onDelete={() => handleDeleteClick(campaign.id)}
                   isDeleting={isPending}
                 />
               )}

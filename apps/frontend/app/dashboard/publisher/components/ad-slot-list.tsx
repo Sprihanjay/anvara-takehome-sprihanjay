@@ -8,6 +8,7 @@ import { deleteAdSlot } from '@/lib/api';
 import type { AdSlot } from '@/lib/types';
 import { AdSlotCard } from './ad-slot-card';
 import { AdSlotForm } from './ad-slot-form';
+import { ConfirmDialog } from '@/components/ui/ConfirmDialog';
 import PlusImg from '../../../assets/images/plusimg.svg';
 
 interface AdSlotListProps {
@@ -21,21 +22,29 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'ALL' | 'AVAILABLE' | 'BOOKED'>('ALL');
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
-  const handleDelete = async (id: string) => {
-    if (!window.confirm('Are you sure you want to delete this ad slot?')) return;
+  const handleDeleteClick = (id: string) => {
+    setDeleteConfirmId(id);
+  };
 
+  const handleDeleteConfirm = () => {
+    if (!deleteConfirmId) return;
+    const id = deleteConfirmId;
+    setDeleteConfirmId(null);
     startTransition(async () => {
       try {
         await deleteAdSlot(id);
-        const newSlots = adSlots.filter((slot) => slot.id !== id);
-        setAdSlots(newSlots);
+        setAdSlots((prev) => prev.filter((slot) => slot.id !== id));
         router.refresh();
       } catch {
-        // console.error('Failed to delete ad slot:', error);
         alert('Failed to delete ad slot');
       }
     });
+  };
+
+  const handleDeleteCancel = () => {
+    setDeleteConfirmId(null);
   };
 
   const filteredSlots = adSlots.filter((slot) => {
@@ -80,6 +89,16 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
 
   return (
     <div className="space-y-8">
+      <ConfirmDialog
+        open={deleteConfirmId !== null}
+        onClose={handleDeleteCancel}
+        onConfirm={handleDeleteConfirm}
+        title="Delete ad slot"
+        message="Are you sure you want to delete this ad slot? This action cannot be undone."
+        confirmLabel="Delete"
+        variant="danger"
+        isLoading={isPending}
+      />
       {/* Header & Stats */}
       <div className="mb-8 flex items-center justify-between">
         <div>
@@ -187,7 +206,7 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
                   key={slot.id}
                   adSlot={slot}
                   onEdit={() => setEditingId(slot.id)}
-                  onDelete={() => handleDelete(slot.id)}
+                  onDelete={() => handleDeleteClick(slot.id)}
                   isDeleting={isPending}
                 />
               )}
