@@ -18,13 +18,23 @@ interface CampaignCardProps {
 }
 
 export function CampaignCard({ campaign, onEdit, onDelete, isDeleting }: CampaignCardProps) {
-  const progress =
-    campaign.budget > 0 ? (Number(campaign.spent) / Number(campaign.budget)) * 100 : 0;
+  const budget = Number(campaign.budget);
+  const spent = Number(campaign.spent);
+  const remaining = budget - spent;
+  const progress = budget > 0 ? Math.min((spent / budget) * 100, 100) : 0;
+
+  const formatDate = (dateStr: string) =>
+    new Date(dateStr).toLocaleDateString('en-US', {
+      month: 'numeric',
+      day: 'numeric',
+      year: 'numeric',
+    });
 
   return (
-    <div className="bg-white text-black rounded-4xl border shadow-xl p-6 gap-4 border-gray-50">
-      <div className="mb-2 flex items-start justify-between">
-        <h3 className=" font-extrabold">{campaign.name}</h3>
+    <div className="bg-white text-black rounded-4xl border shadow-xl p-6 flex flex-col gap-4 border-gray-50">
+      {/* Header */}
+      <div className="flex items-start justify-between">
+        <h3 className="font-semibold text-lg leading-tight">{campaign.name}</h3>
         <span
           className={`font-bold rounded-2xl px-3 py-0.5 text-xs ${statusColors[campaign.status] || 'bg-gray-100'}`}
         >
@@ -33,43 +43,64 @@ export function CampaignCard({ campaign, onEdit, onDelete, isDeleting }: Campaig
       </div>
 
       {campaign.description && (
-        <p className="mb-3 text-sm text-[--color-muted] line-clamp-2">{campaign.description}</p>
+        <p className="text-sm text-[--color-muted] line-clamp-2 -mt-2">{campaign.description}</p>
       )}
 
-      <div className="mb-2">
-        <div className="flex justify-between text-sm">
-          <span className="flex items-center text-[--color-muted]">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-wallet h-3 w-3 text-blue-600 mr-1" aria-hidden="true"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"></path><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"></path></svg>
+      {/* Budget */}
+      <div>
+        <div className="flex items-center justify-between mb-2">
+          <span className="flex items-center gap-1.5 text-sm font-semibold text-[--color-muted]">
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100">
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </span>
             Budget
           </span>
-          <span>
-            ${Number(campaign.spent).toLocaleString()} / ${Number(campaign.budget).toLocaleString()}
+          <span className="text-sm font-bold text-black">
+            ${spent.toLocaleString()} <span className="font-normal text-[--color-muted]">/ ${budget.toLocaleString()}</span>
           </span>
         </div>
-        <div className="mt-1 h-1.5 rounded-full bg-gray-200">
+        <div className="h-2 rounded-full bg-gray-200 overflow-hidden">
           <div
-            className="h-1.5 rounded-full bg-[--color-primary]"
-            style={{ width: `${Math.min(progress, 100)}%` }}
+            className="h-2 rounded-full bg-black transition-all duration-500"
+            style={{ width: `${progress}%` }}
           />
+        </div>
+        <p className="mt-1.5 text-xs text-[--color-muted]">
+          {Math.round(progress)}% used · ${remaining.toLocaleString()} remaining
+        </p>
+      </div>
+
+      {/* Campaign Duration */}
+      <div className="rounded-2xl bg-[#F7F8F9] px-4 py-3">
+        <div className="flex items-center gap-1.5 mb-2 text-sm font-semibold text-black">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          Campaign Duration
+        </div>
+        <div className="flex items-center gap-3">
+          <div>
+            <p className="text-xs text-[--color-muted]">Start Date</p>
+            <p className="text-sm font-bold text-black">{formatDate(campaign.startDate)}</p>
+          </div>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400 shrink-0"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          <div>
+            <p className="text-xs text-[--color-muted]">End Date</p>
+            <p className="text-sm font-bold text-black">{formatDate(campaign.endDate)}</p>
+          </div>
         </div>
       </div>
 
-      <div className="mb-3 text-xs text-[--color-muted]">
-        {new Date(campaign.startDate).toLocaleDateString()} -{' '}
-        {new Date(campaign.endDate).toLocaleDateString()}
-      </div>
-
+      {/* Actions */}
       <div className="flex gap-2 justify-end">
         <button
           onClick={onEdit}
-          className="font-bold rounded-2xl bg-[#DBEAFF] px-3 py-1 text-xs text-[#165DFC] hover:opacity-90 hover:cursor-pointer"
+          className="font-bold rounded-2xl bg-[#DBEAFF] px-5 py-2 text-sm text-[#165DFC] hover:opacity-90 hover:cursor-pointer"
         >
           Edit
         </button>
         <button
           onClick={onDelete}
           disabled={isDeleting}
-          className="rounded-2xl font-bold bg-[#FFE2E2] px-3 py-1 text-xs text-[#E7000B] hover:opacity-90 disabled:opacity-50 hover:cursor-pointer"
+          className="rounded-2xl font-bold bg-[#FFE2E2] px-5 py-2 text-sm text-[#E7000B] hover:opacity-90 disabled:opacity-50 hover:cursor-pointer"
         >
           {isDeleting ? 'Deleting...' : 'Delete'}
         </button>
