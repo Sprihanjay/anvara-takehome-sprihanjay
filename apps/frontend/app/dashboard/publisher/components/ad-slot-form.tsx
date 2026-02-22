@@ -66,6 +66,20 @@ export function AdSlotForm({ adSlot, onCancel, onSave }: AdSlotFormProps) {
         />
       </div>
 
+      <div>
+        <label htmlFor="adslot-position" className="block text-md font-medium">
+          Position
+        </label>
+        <input
+          type="text"
+          id="adslot-position"
+          name="position"
+          defaultValue={adSlot?.position ?? ''}
+          placeholder="e.g. Header, Sidebar, Footer, In-article"
+          className="py-3 mt-2 block w-full rounded-xl bg-[#F7F8F9] px-4 text-sm border border-transparent focus:outline-none focus:border-2 focus:valid:border-black"
+        />
+      </div>
+
       {!isEdit && (
         <div>
           <label htmlFor="adslot-type" className="block text-md font-medium">
@@ -108,35 +122,6 @@ export function AdSlotForm({ adSlot, onCancel, onSave }: AdSlotFormProps) {
         {state.fieldErrors?.basePrice && (
           <p className="mt-2 text-xs text-red-600">{state.fieldErrors.basePrice}</p>
         )}
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="adslot-width" className="block text-md font-medium">
-            Width (px)
-          </label>
-          <input
-            type="number"
-            id="adslot-width"
-            name="width"
-            min="0"
-            placeholder="300"
-            className="mt-2 block w-full rounded-xl border border-transparent bg-[#F7F8F9] px-4 py-3 text-sm focus:outline-none focus:border-2 focus:invalid:border-red-500 focus:valid:border-black"
-          />
-        </div>
-        <div>
-          <label htmlFor="adslot-height" className="block text-md font-medium">
-            Height (px)
-          </label>
-          <input
-            type="number"
-            id="adslot-height"
-            name="height"
-            min="0"
-            placeholder="250"
-            className="mt-2 block w-full rounded-xl border border-transparent bg-[#F7F8F9] px-4 py-3 text-sm focus:outline-none focus:border-2 focus:invalid:border-red-500 focus:valid:border-black"
-          />
-        </div>
       </div>
 
       {isEdit && (

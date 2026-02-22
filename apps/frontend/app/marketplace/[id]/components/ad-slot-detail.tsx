@@ -354,9 +354,6 @@ export function AdSlotDetail({ id }: Props) {
                       {booking ? 'Processing...' : 'Book Now'}
                     </button>
                   )}
-                  <button className="w-full rounded-2xl border border-[#4057FE] py-3 text-[#4057FE] font-bold hover:bg-blue-50 transition-colors cursor-pointer">
-                    Request a Custom Quote
-                  </button>
                 </>
               ) : (
                 <div className="text-center p-4 bg-gray-50 rounded-2xl">

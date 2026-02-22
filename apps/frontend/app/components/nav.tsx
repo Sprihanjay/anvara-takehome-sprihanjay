@@ -11,6 +11,7 @@ type UserRole = 'sponsor' | 'publisher' | null;
 
 export function Nav() {
   const pathname = usePathname();
+  const isHome = pathname === '/';
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user;
   const [role, setRole] = useState<UserRole>(null);
@@ -94,6 +95,8 @@ export function Nav() {
             className={`relative z-10 rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-300 ${
               pathname.startsWith('/marketplace')
                 ? 'text-[#4057FE]'
+                : isHome
+                ? 'text-white hover:text-white/80'
                 : 'text-gray-500 hover:text-[#4057FE]'
             }`}
           >
@@ -107,6 +110,8 @@ export function Nav() {
               className={`relative z-10 rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-300 ${
                 pathname.startsWith('/dashboard/sponsor')
                   ? 'text-[#4057FE]'
+                  : isHome
+                  ? 'text-white hover:text-white/80'
                   : 'text-gray-500 hover:text-[#4057FE]'
               }`}
             >
@@ -120,6 +125,8 @@ export function Nav() {
               className={`relative z-10 rounded-full px-4 py-2 text-sm font-semibold transition-colors duration-300 ${
                 pathname.startsWith('/dashboard/publisher')
                   ? 'text-[#4057FE]'
+                  : isHome
+                  ? 'text-white hover:text-white/80'
                   : 'text-gray-500 hover:text-[#4057FE]'
               }`}
             >

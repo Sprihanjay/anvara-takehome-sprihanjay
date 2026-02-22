@@ -27,6 +27,7 @@ export async function createAdSlot(
   const name = formData.get('name') as string;
   const description = formData.get('description') as string;
   const type = formData.get('type') as string;
+  const position = formData.get('position') as string;
   const basePriceStr = formData.get('basePrice') as string;
   const widthStr = formData.get('width') as string;
   const heightStr = formData.get('height') as string;
@@ -51,6 +52,7 @@ export async function createAdSlot(
   const cookie = await getAuthCookie();
   const body: Record<string, unknown> = { name: name.trim(), type, basePrice };
   if (description?.trim()) body.description = description.trim();
+  if (position?.trim()) body.position = position.trim();
   if (widthStr) body.width = parseInt(widthStr, 10);
   if (heightStr) body.height = parseInt(heightStr, 10);
 
@@ -76,6 +78,7 @@ export async function updateAdSlot(
 ): Promise<ActionResult> {
   const name = formData.get('name') as string;
   const description = formData.get('description') as string;
+  const position = formData.get('position') as string;
   const basePriceStr = formData.get('basePrice') as string;
   const widthStr = formData.get('width') as string;
   const heightStr = formData.get('height') as string;
@@ -101,6 +104,7 @@ export async function updateAdSlot(
   const body: Record<string, unknown> = { isAvailable };
   if (name?.trim()) body.name = name.trim();
   if (description !== null) body.description = description?.trim() || null;
+  if (position !== null) body.position = position?.trim() || null;
   if (basePriceStr) body.basePrice = parseFloat(basePriceStr);
   if (widthStr) body.width = parseInt(widthStr, 10);
   if (heightStr) body.height = parseInt(heightStr, 10);

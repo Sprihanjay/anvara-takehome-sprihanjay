@@ -21,7 +21,7 @@ export function AdSlotCard({ adSlot, onEdit, onDelete, isDeleting }: AdSlotCardP
   return (
     <div className="bg-white text-black rounded-4xl border shadow-xl p-6 gap-4 border-gray-50">
       <div className="mb-2 flex items-start justify-between">
-        <h3 className="font-extrabold">{adSlot.name}</h3>
+        <h3 className="font-semibold">{adSlot.name}</h3>
         <span className={`font-bold rounded-2xl px-3 py-0.5 text-xs ${typeColors[adSlot.type] || 'bg-gray-100'}`}>
           {adSlot.type}
         </span>
@@ -33,11 +33,26 @@ export function AdSlotCard({ adSlot, onEdit, onDelete, isDeleting }: AdSlotCardP
 
       <div className="mb-3 flex items-center justify-between">
         <span
-          className={`text-sm font-medium ${adSlot.isAvailable ? 'text-green-600' : 'text-[--color-muted]'}`}
+          className={
+            adSlot.isAvailable
+              ? 'inline-flex items-center gap-1.5 px-3 py-1.5 bg-green-50 text-green-700 rounded-lg text-sm font-medium border border-green-200'
+              : 'inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-600 rounded-lg text-sm font-medium border border-gray-200'
+          }
         >
+          {adSlot.isAvailable ? (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <circle cx="8" cy="8" r="6" fill="currentColor" fillOpacity="0.2" />
+              <circle cx="8" cy="8" r="3" fill="currentColor" />
+            </svg>
+          ) : (
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+              <rect x="4" y="4" width="8" height="8" rx="1" fill="currentColor" fillOpacity="0.3" />
+              <rect x="6" y="6" width="4" height="4" fill="currentColor" />
+            </svg>
+          )}
           {adSlot.isAvailable ? 'Available' : 'Booked'}
         </span>
-        <span className="font-bold text-[#4057FE]">
+        <span className="font-semibold text-[#4057FE]">
           ${Number(adSlot.basePrice).toLocaleString()}/mo
         </span>
       </div>
