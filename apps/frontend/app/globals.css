@@ -22,7 +22,7 @@
   --bg-input: #F5F5F5;
   --bg-pill: #C4CAFE;
   --bg-avatar: #E5E8FF;
-  --bg-newsletter: #D9DDFC;
+  --bg-newsletter: #DADEFD
   --bg-edit: #DBEAFF;
   --text-edit: #165DFC;
   --bg-delete: #FFE2E2;
@@ -106,8 +106,17 @@ body {
 .bg-surface-muted {
   background-color: var(--color-background);
 }
+.bg-newsletter {
+  background-color: #C3C9FE;
+}
 .bg-primary-light {
   background-color: var(--bg-primary-light);
+}
+.detail-icon-wrap {
+  background-color: #DADEFD;
+}
+.detail-icon {
+  color: #4057FE;
 }
 .text-primary {
   color: var(--text-primary);

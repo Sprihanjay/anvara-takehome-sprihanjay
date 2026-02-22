@@ -47,7 +47,7 @@ export function NewsletterSignup() {
   };
 
   return (
-    <div className="w-full bg-[--bg-newsletter] border-t border-primary-subtle text-slate-900 py-8 mt-20">
+    <div className="w-full bg-newsletter border-t border-primary-subtle text-slate-900 py-8 mt-20">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>

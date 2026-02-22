@@ -206,7 +206,7 @@ export function AdSlotDetail({ id }: Props) {
           <h2 className="text-xl font-bold mb-4">Audience & Reach</h2>
           <div className="space-y-4">
             <div className="bg-[--color-background] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-[--bg-primary-light] flex items-center justify-center text-[--text-primary]">
+              <div className="h-12 w-12 rounded-xl detail-icon-wrap flex items-center justify-center detail-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
                   <circle cx="12" cy="12" r="3"></circle>
@@ -219,7 +219,7 @@ export function AdSlotDetail({ id }: Props) {
             </div>
 
             <div className="bg-[--color-background] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-[--bg-primary-light] flex items-center justify-center text-[--text-primary]">
+              <div className="h-12 w-12 rounded-xl detail-icon-wrap flex items-center justify-center detail-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
                   <circle cx="9" cy="7" r="4"></circle>
@@ -234,7 +234,7 @@ export function AdSlotDetail({ id }: Props) {
             </div>
 
             <div className="bg-[--color-background] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-[--bg-primary-light] flex items-center justify-center text-[--text-primary]">
+              <div className="h-12 w-12 rounded-xl detail-icon-wrap flex items-center justify-center detail-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
                   <line x1="7" y1="7" x2="7.01" y2="7"></line>
@@ -253,7 +253,7 @@ export function AdSlotDetail({ id }: Props) {
           <h2 className="text-xl font-bold mb-4">Placement Details</h2>
           <div className="space-y-4">
             <div className="bg-[--color-background] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-[--bg-primary-light] flex items-center justify-center text-[--text-primary]">
+              <div className="h-12 w-12 rounded-xl detail-icon-wrap flex items-center justify-center detail-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
                   <circle cx="12" cy="10" r="3"></circle>
@@ -271,7 +271,7 @@ export function AdSlotDetail({ id }: Props) {
             </div>
 
             <div className="bg-[--color-background] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-[--bg-primary-light] flex items-center justify-center text-[--text-primary]">
+              <div className="h-12 w-12 rounded-xl detail-icon-wrap flex items-center justify-center detail-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
                   <line x1="8" y1="21" x2="16" y2="21"></line>
@@ -287,7 +287,7 @@ export function AdSlotDetail({ id }: Props) {
             </div>
 
             <div className="bg-[--color-background] rounded-2xl p-4 flex items-center gap-4 border border-gray-100 shadow-sm">
-              <div className="h-12 w-12 rounded-xl bg-[--bg-primary-light] flex items-center justify-center text-[--text-primary]">
+              <div className="h-12 w-12 rounded-xl detail-icon-wrap flex items-center justify-center detail-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <line x1="12" y1="1" x2="12" y2="23"></line>
                   <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
