@@ -8,11 +8,13 @@ import adSlotsRoutes from './adSlots.js';
 import placementsRoutes from './placements.js';
 import dashboardRoutes from './dashboard.js';
 import healthRoutes from './health.js';
+import newsletterRoutes from './newsletter.js';
 
 const router: IRouter = Router();
 
 // Public routes
 router.use('/health', healthRoutes);
+router.use('/newsletter', newsletterRoutes);
 router.use('/auth', authRoutes);
 router.use('/ad-slots', adSlotsRoutes);
 
