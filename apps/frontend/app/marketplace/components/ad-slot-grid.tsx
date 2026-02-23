@@ -133,7 +133,7 @@ export function AdSlotGrid() {
             placeholder="Search placements..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-2xl border border-gray-200 bg-[var(--color-background)] py-3 pl-12 pr-4 text-sm text-black placeholder:text-gray-400 focus:border-black focus:outline-none"
+            className="w-full rounded-2xl border border-gray-200 bg-[--color-background] py-3 pl-12 pr-4 text-sm text-black placeholder:text-gray-400 focus:border-black focus:outline-none"
           />
         </div>
 
@@ -201,7 +201,7 @@ export function AdSlotGrid() {
                 <line x1="6" y1="6" x2="18" y2="18"></line>
               </svg>
               Clear Filters
-              <span className="ml-1 rounded-full bg-[var(--bg-primary-light)] px-2 py-0.5 text-xs text-[var(--text-primary)] font-semibold">{activeFilterCount}</span>
+              <span className="ml-1 rounded-full bg-[--bg-primary-light] px-2 py-0.5 text-xs text-[--text-primary] font-semibold">{activeFilterCount}</span>
             </button>
           )}
         </div>
