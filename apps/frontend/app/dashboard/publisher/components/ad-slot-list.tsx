@@ -139,11 +139,11 @@ export function AdSlotList({ initialAdSlots }: AdSlotListProps) {
             <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
-                filter === f
+className={`rounded-full px-4 py-2 text-sm font-medium transition-all cursor-pointer ${
+                  filter === f
                   ? 'bg-btn-primary text-white'
                   : 'border border-gray-200 text-gray-700 hover:border-gray-300'
-              }`}
+                }`}
             >
               {f.charAt(0).toUpperCase() + f.slice(1).toLowerCase()}
             </button>

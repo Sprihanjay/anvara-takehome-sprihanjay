@@ -135,7 +135,7 @@ export function CampaignList({ campaigns }: CampaignListProps) {
               <button
                 key={tab}
                 onClick={() => setActiveFilter(tab as FilterTab)}
-                className={`rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                className={`rounded-full px-4 py-2 text-sm font-medium transition-all cursor-pointer ${
                   activeFilter === tab
                     ? 'bg-btn-primary text-white'
                     : 'border border-gray-200 text-gray-700 hover:border-gray-300'

@@ -50,7 +50,7 @@ export function CustomSelect({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center justify-between gap-2 rounded-2xl bg-[var(--color-background)] px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none"
+        className="flex items-center justify-between gap-2 rounded-2xl bg-[var(--color-background)] px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100 focus:outline-none cursor-pointer"
       >
         <span>{selectedOption?.label || placeholder || 'Select'}</span>
         <ChevronDown
@@ -69,7 +69,7 @@ export function CustomSelect({
                   onChange(option.value);
                   setIsOpen(false);
                 }}
-                className={`flex w-full items-center justify-between rounded-xl px-4 py-2 text-left text-sm ${
+                className={`flex w-full items-center justify-between rounded-xl px-4 py-2 text-left text-sm cursor-pointer ${
                   value === option.value
                     ? 'bg-gray-100 font-medium text-gray-900'
                     : 'text-gray-700 hover:bg-gray-50'

@@ -81,7 +81,7 @@ export function NewsletterSignup() {
                 <button
                   type="submit"
                   disabled={status === 'loading'}
-                  className="px-6 py-3 bg-btn-primary hover:bg-btn-primary-hover text-white font-bold rounded-xl transition-all shadow-lg disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center min-w-30"
+                  className="px-6 py-3 bg-btn-primary hover:bg-btn-primary-hover text-white font-bold rounded-xl transition-all shadow-lg cursor-pointer disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center min-w-30"
                 >
                   {status === 'loading' ? (
                     <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
